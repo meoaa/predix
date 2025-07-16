@@ -114,6 +114,8 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css"
     />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   </head>
   <body>
     <div class="navbar">
@@ -158,19 +160,27 @@
 
         const addBtn = document.createElement("button");
         const submitBtn = document.createElement("button");
+        const typeInput = document.createElement("input");
 
         addBtn.textContent = "추가";
         submitBtn.textContent = "제출";
+
+        typeInput.type = "hidden";
+        typeInput.value = "MONTH";
+        typeInput.name = "sales_type";
 
         initMonthInput();
 
         btnBox.appendChild(addBtn);
         btnBox.appendChild(submitBtn);
 
+        inputItemBox.appendChild(typeInput);
+
         addBtn.addEventListener("click", initMonthInput);
+
         submitBtn.addEventListener("click", () => {
           if (confirm("제출 하시겠습니까?")) {
-            alert("제출 되었습니다.");
+            submitData();
           }
         });
       });
@@ -180,24 +190,78 @@
         btnBox.innerHTML = "";
 
         const addBtn = document.createElement("button");
-        const submitBtn = document.createElement("button");
-
         addBtn.textContent = "추가";
+
+        const submitBtn = document.createElement("button");
         submitBtn.textContent = "제출";
+
+        const typeInput = document.createElement("input");
+        typeInput.type = "hidden";
+        typeInput.value = "WEEK";
+        typeInput.name = "sales_type";
 
         initWeekInput();
 
         btnBox.appendChild(addBtn);
         btnBox.appendChild(submitBtn);
+        inputItemBox.appendChild(typeInput);
 
         addBtn.addEventListener("click", initWeekInput);
 
         submitBtn.addEventListener("click", () => {
           if (confirm("제출 하시겠습니까?")) {
-            alert("제출 되었습니다.");
+            submitData();
           }
         });
       });
+
+      function submitData() {
+        const salesData = [];
+        const inputRows = inputItemBox.querySelectorAll(".input_row");
+        const salesType = inputItemBox.querySelector(
+          "input[name='sales_type']"
+        ).value;
+
+        let checkValue = true;
+        inputRows.forEach((row) => {
+          const startDate = row.querySelector("input[name='start_date']").value;
+          const endDate = row.querySelector("input[name='end_date']").value;
+          const amount = row.querySelector("input[name='amount']").value;
+
+          if (!startDate || !endDate || !amount) {
+            checkValue = false;
+          }
+
+          if (amount) {
+            salesData.push({
+              startDate,
+              endDate,
+              amount: parseFloat(amount),
+              type: salesType,
+            });
+          }
+        });
+
+        const duplicateDate = hasDuplicateStartDates(salesData);
+
+        if (!checkValue) {
+          alert("모든 값을 입력해주세요.");
+          return;
+        } else if (duplicateDate) {
+          alert("중복된 기간이 존재합니다.");
+          return;
+        }
+
+        const jsonData = JSON.stringify(salesData);
+
+        $.ajax({
+          url: "/api/sales/create",
+          method: "POST",
+          contentType: "application/json",
+          data: jsonData,
+          dataType: "json",
+        });
+      }
 
       function initMonthInput() {
         const row = document.createElement("div");
@@ -205,9 +269,11 @@
 
         const startDateInput = document.createElement("input");
         startDateInput.type = "hidden";
+        startDateInput.name = "start_date";
 
         const endDateInput = document.createElement("input");
         endDateInput.type = "hidden";
+        endDateInput.name = "end_date";
 
         const monthInput = document.createElement("input");
         monthInput.type = "text";
@@ -236,7 +302,6 @@
           locale: "ko",
           onChange: function ([selectedDate]) {
             if (!selectedDate) return;
-            // 월 전용 UI 흉내내기
             const { firstDay, lastDay } = getMonthRange(selectedDate);
             startDateInput.value = formatDateToYYYYMMDD(firstDay);
             endDateInput.value = formatDateToYYYYMMDD(lastDay);
@@ -250,9 +315,12 @@
 
         const startDateInput = document.createElement("input");
         startDateInput.type = "hidden";
+        startDateInput.name = "start_date";
+
 
         const endDateInput = document.createElement("input");
         endDateInput.type = "hidden";
+        endDateInput.name = "end_date";
 
         const weekInput = document.createElement("input");
         weekInput.type = "text";
@@ -292,18 +360,6 @@
 
             startDateInput.value = formatDateToYYYYMMDD(sunday);
             endDateInput.value = formatDateToYYYYMMDD(saturday);
-
-            const format = (d) =>
-              `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-                2,
-                "0"
-              )}-${String(d.getDate()).padStart(2, "0")}`;
-
-            //         document.getElementById("result").innerHTML = `
-            //     선택된 주: ${format(sunday)} ~ ${format(saturday)}
-            //   `;
-
-            // 👉 여기에 week별 입력 UI 생성 로직 넣으면 됨
           },
         });
       }
@@ -327,6 +383,22 @@
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
+      }
+
+      function hasDuplicateStartDates(salesData) {
+        const seenStartDates = new Set();
+
+        for (const item of salesData) {
+          const startDate = item.startDate;
+
+          if (seenStartDates.has(startDate)) {
+            return true;
+          }
+
+          seenStartDates.add(startDate);
+        }
+
+        return false;
       }
     </script>
   </body>

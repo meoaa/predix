@@ -2,7 +2,6 @@ package proejct.predix.sales.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +12,9 @@ import proejct.predix.member.domain.Member;
 import proejct.predix.sales.domain.Sales;
 import proejct.predix.store.domain.Store;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -51,7 +48,7 @@ class SalesRepositoryTest {
     @DisplayName("매출 생성 테스트")
     public void createSalesTest(){
         log.info("매출 생성 테스트");
-        Sales sale = new Sales( LocalDate.now(), 250000L, "category");
+        Sales sale = new Sales(250000L);
         salesRepository.save(sale);
 
         em.flush();
@@ -69,8 +66,8 @@ class SalesRepositoryTest {
     @DisplayName("매출 전체 조회 테스트")
     public void findAllSalesTesT(){
         log.info("매출 전체 조회 테스트");
-        Sales sale1 = new Sales( LocalDate.now(), 250000L, "category");
-        Sales sale2 = new Sales(LocalDate.now(), 250000L, "test");
+        Sales sale1 = new Sales(250000L);
+        Sales sale2 = new Sales(250000L);
 
         salesRepository.save(sale1);
         salesRepository.save(sale2);
@@ -87,8 +84,8 @@ class SalesRepositoryTest {
     @DisplayName("매출 삭제 테스트")
     public void deleteSalesTest(){
         log.info("매출 삭제 테스트");
-        Sales sale1 = new Sales( LocalDate.now(), 250000L, "category");
-        Sales sale2 = new Sales( LocalDate.now(), 250000L, "test");
+        Sales sale1 = new Sales(250000L);
+        Sales sale2 = new Sales(250000L);
         salesRepository.save(sale1);
         salesRepository.save(sale2);
 
@@ -114,7 +111,7 @@ class SalesRepositoryTest {
     @DisplayName("연관관계 생성 테스트")
     public void createMappedByStoreTest(){
         log.info("연관관계 생성 테스트");
-        Sales sales = new Sales(LocalDate.now(), 10000L, "category");
+        Sales sales = new Sales(10000L);
         store.assignSales(sales);
         Sales savedSales = salesRepository.save(sales);
 
@@ -130,7 +127,7 @@ class SalesRepositoryTest {
     @DisplayName("연관관계 삭제 테스트")
     public void deleteMappedByStoreTest(){
         log.info("연관관계 삭제 테스트");
-        Sales sales = new Sales(LocalDate.now(), 10000L, "category");
+        Sales sales = new Sales(10000L);
         store.assignSales(sales);
         salesRepository.save(sales);
 
@@ -140,7 +137,7 @@ class SalesRepositoryTest {
         member2.assignStore(store2);
         em.persist(store2);
 
-        Sales sales2 = new Sales(LocalDate.now(), 100000L, "category2");
+        Sales sales2 = new Sales(100000L);
         store2.assignSales(sales2);
         salesRepository.save(sales2);
 

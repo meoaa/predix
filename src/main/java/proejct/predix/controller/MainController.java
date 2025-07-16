@@ -13,7 +13,7 @@ public class MainController {
         log.info("main page");
         boolean login = true;
         if(login){
-            return "index";
+            return "input";
         }
         return "login";
     }

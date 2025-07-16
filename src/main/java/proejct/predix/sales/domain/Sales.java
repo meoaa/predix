@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import proejct.predix.sales.dto.SalesCreateRequestDto;
 import proejct.predix.store.domain.Store;
 
 import java.time.LocalDate;
@@ -22,26 +23,50 @@ public class Sales {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column(name = "sales_date")
-    private LocalDate salesDate;
-
     @Column(name = "amount")
     private Long amount;
-
-    @Column(name = "category", length = 50)
-    private String category;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Sales(
-                 LocalDate salesDate,
-                 Long amount,
-                 String category) {
-        this.salesDate = salesDate;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name = "order_num")
+    private int orderNum;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private SalesType type;
+
+    public Sales(Long amount) {
         this.amount = amount;
-        this.category = category;
+    }
+
+    private Sales(
+            Long amount,
+            LocalDate startDate,
+            LocalDate endDate,
+            int orderNum,
+            SalesType type) {
+        this.amount = amount;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.orderNum = orderNum;
+        this.type = type;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public static Sales of(SalesCreateRequestDto dto){
+        return new Sales(
+                dto.getAmount(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getOrderNum(),
+                dto.getType());
     }
 
     /* 연관관계 메서드*/
