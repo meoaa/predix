@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <nav class="sidebar" th:fragment="sidebar">
+    <ul>
+      <li><a href="#" onclick="loadPage('input')">매출 입력</a></li>
+      <li><a href="#" onclick="loadPage('stats')">통계 보기</a></li>
+      <li><a href="#" onclick="loadPage('predict')">매출 예측</a></li>
+    </ul>
+  </nav>
+</body>
+</html>

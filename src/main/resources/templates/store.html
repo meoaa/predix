@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predix - 자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="template/fragment/navbar :: navbar"></div>
+
+<div class="container">
+  <nav th:replace="template/fragment/sidebar :: sidebar"></nav>
+
+  <main class="main-content" id="mainContent">
+    <h2>가게 관리</h2>
+    <div class="placeholder-box">
+      <label>가게명:<input type="text" placeholder="가게명을 입력해주세요."></label>
+      <br>
+      <label>분류 :
+        <select id="category" name="category">
+          <option value="" disabled selected>-- 업종 선택 --</option>
+
+          <!-- 음식·숙박업 -->
+          <optgroup label="음식·숙박업">
+            <option value="FOOD_KOREAN">한식 음식점</option>
+            <option value="FOOD_CHINESE">중식 음식점</option>
+            <option value="FOOD_JAPANESE">일식·초밥</option>
+            <option value="FOOD_SNACK_DELIVERY">분식·배달전문</option>
+            <option value="FOOD_CAFE">카페·음료</option>
+            <option value="FOOD_BAKERY">제과·베이커리</option>
+            <option value="FOOD_CHICKEN_PIZZA">치킨·피자</option>
+            <option value="FOOD_PUB">호프·주점</option>
+            <option value="ACCOM_GUESTHOUSE">게스트하우스·숙박</option>
+          </optgroup>
+
+          <!-- 도·소매업 -->
+          <optgroup label="도·소매업">
+            <option value="RETAIL_CONVENIENCE">편의점</option>
+            <option value="RETAIL_GROCERY">슈퍼·식료품</option>
+            <option value="RETAIL_FASHION">의류·패션</option>
+            <option value="RETAIL_BEAUTY">화장품·뷰티</option>
+            <option value="RETAIL_ELECTRONICS">전자·가전</option>
+            <option value="RETAIL_MISC">생활잡화</option>
+            <option value="RETAIL_BOOK">서점·문구</option>
+          </optgroup>
+
+          <!-- 서비스업 -->
+          <optgroup label="서비스업">
+            <option value="SERVICE_BEAUTY_SALON">미용실·이용원</option>
+            <option value="SERVICE_LAUNDRY">세탁·수선</option>
+            <option value="SERVICE_EDU">교육·학원</option>
+            <option value="SERVICE_MEDICAL">병원·약국</option>
+            <option value="SERVICE_FITNESS">피트니스·헬스</option>
+            <option value="SERVICE_PHOTO">사진관·스튜디오</option>
+            <option value="SERVICE_PC_KARAOKE">PC방·노래방</option>
+            <option value="SERVICE_REAL_ESTATE">부동산중개</option>
+            <option value="SERVICE_CAR_REPAIR">자동차정비</option>
+          </optgroup>
+        </select>
+      </label>
+      <br>
+      <label>주소<input type="text" id="sample5_address" placeholder="주소" />
+        <input
+                type="button"
+                onclick="sample5_execDaumPostcode()"
+                value="주소 검색"
+        /><br /></label>
+      <br>
+      <label>개업일자 : </label>
+    </div>
+  </main>
+</div>
+</body>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=04a73b13e25e942ffa2536002f0d681a&libraries=services"></script>
+<script>
+  const depthName2 = document.querySelector("#region2");
+  const depthName3 = document.querySelector("#region3");
+  function sample5_execDaumPostcode() {
+    new daum.Postcode({
+      oncomplete: function (data) {
+        var addr = data.address; // 최종 주소 변수
+
+        // 주소 정보를 해당 필드에 넣는다.
+        document.getElementById("sample5_address").value = addr;
+        // 주소로 상세 정보를 검색
+        geocoder.addressSearch(data.address, function (results, status) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === daum.maps.services.Status.OK) {
+            var result = results[0]; //첫번째 결과의 값을 활용
+
+            depthName2.value = result.road_address.region_2depth_name;
+            depthName3.value = result.road_address.region_3depth_name;
+
+            // 해당 주소에 대한 좌표를 받아서
+            var coords = new daum.maps.LatLng(result.y, result.x);
+            // 지도를 보여준다.
+            mapContainer.style.display = "block";
+            map.relayout();
+            // 지도 중심을 변경한다.
+            map.setCenter(coords);
+            // 마커를 결과값으로 받은 위치로 옮긴다.
+            marker.setPosition(coords);
+          }
+        });
+      },
+    }).open();
+  }
+  async function submit_address(){
+      fetch("/api/dong-mapping/create",{
+        method:"POST",
+          headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          region2: depthName2.value,
+          region3: depthName3.value
+        })
+
+      })
+
+  }
+</script>
+</html>
