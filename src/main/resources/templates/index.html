@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Predix - 자영업자 매출 예측 시스템</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
+  <body>
+  <div th:replace="fragment/navbar :: navbar"></div>
+
+  <div class="container">
+    <nav th:replace="fragment/sidebar :: sidebar"></nav>
+
+
+      <main class="main-content" id="mainContent">
+        <h2>대시보드</h2>
+        <div class="placeholder-box">
+          여기에 최근 매출 요약, 예측 결과 요약 등을 표시할 수 있습니다.
+        </div>
+      </main>
+    </div>
+
+  </body>
+</html>

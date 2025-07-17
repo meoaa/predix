@@ -1,0 +1,101 @@
+* {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f4f6f8;
+      }
+
+      /* 상단 네비게이션 */
+      .navbar {
+        background-color: #1e3a8a;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar h1 {
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      .navbar .logout {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .navbar .manage_store{
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* 전체 레이아웃 */
+      .container {
+        display: flex;
+        height: calc(100vh - 72px);
+      }
+
+      /* 좌측 사이드바 */
+      .sidebar {
+        width: 220px;
+        background-color: #ffffff;
+        border-right: 1px solid #e0e0e0;
+        padding: 2rem 1rem;
+      }
+
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .sidebar li {
+        margin-bottom: 1.2rem;
+      }
+
+      .sidebar a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        display: block;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+      }
+
+      .sidebar a:hover {
+        background-color: #e0e7ff;
+      }
+
+      /* 본문 */
+      .main-content {
+        flex-grow: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .main-content h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .placeholder-box {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 2rem;
+        color: #777;
+      }
+
+      #btn_box {
+        width: 30%;
+        display: flex;
+        justify-content: space-between;
+      }
