@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.predix.store.domain.Store;
+import project.predix.store.domain.entity.Store;
 
 import java.time.LocalDateTime;
 

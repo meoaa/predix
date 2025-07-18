@@ -1,137 +1,25 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Predix - 자영업자 매출 예측 시스템</title>
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background-color: #f4f6f8;
-      }
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predix - 자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="fragment/navbar :: navbar"></div>
 
-      /* 상단 네비게이션 */
-      .navbar {
-        background-color: #1e3a8a;
-        color: white;
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .navbar h1 {
-        font-size: 1.5rem;
-        margin: 0;
-      }
-      .navbar .logout {
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        cursor: pointer;
-      }
+<div class="container">
+  <nav th:replace="fragment/sidebar :: sidebar"></nav>
 
-      /* 전체 레이아웃 */
-      .container {
-        display: flex;
-        height: calc(100vh - 72px);
-      }
 
-      /* 좌측 사이드바 */
-      .sidebar {
-        width: 220px;
-        background-color: #ffffff;
-        border-right: 1px solid #e0e0e0;
-        padding: 2rem 1rem;
-      }
-
-      .sidebar ul {
-        list-style: none;
-        padding: 0;
-      }
-
-      .sidebar li {
-        margin-bottom: 1.2rem;
-      }
-
-      .sidebar a {
-        text-decoration: none;
-        color: #333;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        display: block;
-        border-radius: 6px;
-        transition: background-color 0.2s;
-      }
-
-      .sidebar a:hover {
-        background-color: #e0e7ff;
-      }
-
-      /* 본문 */
-      .main-content {
-        flex-grow: 1;
-        padding: 2rem;
-        overflow-y: auto;
-      }
-
-      .main-content h2 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-      }
-
-      .placeholder-box {
-        background-color: white;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        color: #777;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="navbar">
-      <h1>Predix 매출 예측 시스템</h1>
-      <button class="logout">로그아웃</button>
+  <main class="main-content" id="mainContent">
+    <h2>대시보드</h2>
+    <div class="placeholder-box">
+      여기에 최근 매출 요약, 예측 결과 요약 등을 표시할 수 있습니다.
     </div>
+  </main>
+</div>
 
-    <div class="container">
-      <nav class="sidebar">
-        <ul>
-          <li><a href="#" onclick="loadPage('input')">매출 입력</a></li>
-          <li><a href="#" onclick="loadPage('stats')">통계 보기</a></li>
-          <li><a href="#" onclick="loadPage('predict')">매출 예측</a></li>
-        </ul>
-      </nav>
-
-      <main class="main-content" id="mainContent">
-        <h2>대시보드</h2>
-        <div class="placeholder-box">
-          여기에 최근 매출 요약, 예측 결과 요약 등을 표시할 수 있습니다.
-        </div>
-      </main>
-    </div>
-
-    <script>
-      // 이 부분은 JS 네가 붙이면 됨
-      function loadPage(page) {
-        const content = document.getElementById("mainContent");
-        if (page === "input") {
-          content.innerHTML =
-            '<h2>매출 입력</h2><div class="placeholder-box">매출 입력 폼이 여기에 들어갑니다.</div>';
-        } else if (page === "stats") {
-          content.innerHTML =
-            '<h2>통계 보기</h2><div class="placeholder-box">매출 통계 그래프가 여기에 들어갑니다.</div>';
-        } else if (page === "predict") {
-          content.innerHTML =
-            '<h2>매출 예측</h2><div class="placeholder-box">다음 달 예측 결과가 여기에 들어갑니다.</div>';
-        }
-      }
-    </script>
-  </body>
+</body>
 </html>

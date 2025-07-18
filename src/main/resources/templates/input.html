@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Predix - 자영업자 매출 예측 시스템</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <script type="text/javascript" defer th:src="@{/js/sales.js}"></script>
+<head>
+  <meta charset="UTF-8" />
+  <title>Predix - 자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script type="text/javascript" defer th:src="@{/js/sales.js}"></script>
 
-    <!-- Flatpickr core -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- Flatpickr core -->
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-    <!-- WeekSelect Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <div th:replace="template/fragment/navbar :: navbar"></div>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+  <!-- WeekSelect Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.js"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="fragment/navbar :: navbar"></div>
 
-    <div class="container">
-      <nav th:replace="template/fragment/sidebar :: sidebar"></nav>
+<div class="container">
+  <nav th:replace="fragment/sidebar :: sidebar"></nav>
 
-      <main class="main-content" id="mainContent">
-        <h2>매출 입력</h2>
-        <div class="placeholder-box">
-          <h3>유형 선택</h3>
-          <input name="type" id="type_month" type="radio" value="month" />
-          <label for="type_month">월간</label>
-          <input name="type" id="type_week" type="radio" value="week" />
-          <label for="type_week">주간</label>
-          <div id="input_box">
-            <div id="input_item_box"></div>
-            <div id="btn_box"></div>
-          </div>
-        </div>
-      </main>
+  <main class="main-content" id="mainContent">
+    <h2>매출 입력</h2>
+    <div class="placeholder-box">
+      <h3>유형 선택</h3>
+      <input name="type" id="type_month" type="radio" value="month" />
+      <label for="type_month">월간</label>
+      <input name="type" id="type_week" type="radio" value="week" />
+      <label for="type_week">주간</label>
+      <div id="input_box">
+        <div id="input_item_box"></div>
+        <div id="btn_box"></div>
+      </div>
     </div>
-  </body>
+  </main>
+</div>
+</body>
 </html>

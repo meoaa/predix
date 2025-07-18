@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.predix.sales.dto.SalesCreateRequestDto;
-import project.predix.store.domain.Store;
+import project.predix.store.domain.entity.Store;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
