@@ -16,7 +16,6 @@ spring:
     livereload:
       enabled: true
 
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,3 +23,16 @@ spring:
       properties: # JPA 공급자 (Hibernate)에 전달할 추가 속성
         hibernate:
           format_sql: true # SQL 쿼리를 보기 좋게 포맷팅
+jwt:
+  secret: "${JWT_SECRET:afnidsosf-sajfsdfoao-jasdflsadflkls-124nl124klk-lda}"
+  access-ttl: 900000
+  refresh-ttl: 2592000000
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: predix-ssl
