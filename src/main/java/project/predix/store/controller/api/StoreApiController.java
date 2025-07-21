@@ -21,9 +21,10 @@ public class StoreApiController {
     private final StoreService storeService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<CreateResponseDto>> createStore(@RequestBody CreateRequestDto requestDto){
+    public ResponseEntity<ApiResponse<CreateResponseDto>> createStore
+            (@RequestBody CreateRequestDto requestDto){
 
         CreateResponseDto resDto = storeService.saveStore(requestDto);
-        return ResponseEntity.ok(ApiResponse.of(200, "성공적으로 가게 등록이 완료되었습니다.", resDto));
+        return ResponseEntity.ok(ApiResponse.of(200, "가게 등록이 성공적으로 완료되었습니다.", resDto));
     }
 }
