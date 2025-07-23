@@ -51,17 +51,19 @@ public class AuthApiController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponseDto>> login(@Valid @RequestBody LoginRequestDto dto){
+
         Authentication authenticate = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
         UserDetails user = (UserDetails) authenticate.getPrincipal();
+
         String access = jwtProvider.generateAccess(user.getUsername(), user.getAuthorities());
         String refresh = jwtProvider.generateRefresh(user.getUsername());
 
-        refreshTokenService.create((Member) user, refresh);
+        refreshTokenService.createOrUpdateRefreshToken((Member) user, refresh);
 
         ResponseCookie cookie = ResponseCookie.from("ACCESS_TOKEN", access)
-                .httpOnly(true).secure(true).path("")
+                .httpOnly(true).secure(true).path("/")
                 .maxAge(Duration.ofMillis(jwtProvider.getAccessTtl()))
                 .sameSite("None")
                 .build();

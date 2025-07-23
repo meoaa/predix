@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import project.predix.member.domain.Member;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_refresh_tokens")
@@ -25,14 +26,26 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiry;
 
+    @Column(name = "created_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public RefreshToken(Member member, String token, Instant expiry) {
         this.member = member;
         this.token = token;
         this.expiry = expiry;
+        this.createAt = LocalDateTime.now();
     }
 
     public boolean isExpired(){
         return expiry.isBefore(Instant.now());
+    }
+    public void updateToken(String token, Instant expiry){
+        this.token = token;
+        this.expiry = expiry;
+        this.updatedAt = LocalDateTime.now();
     }
 
 }

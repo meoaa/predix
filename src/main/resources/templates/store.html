@@ -85,7 +85,7 @@
 </div>
 </body>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=04a73b13e25e942ffa2536002f0d681a&libraries=services"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ff2d0f520dd899b7d5a807d1c4cc2ff5&libraries=services"></script>
 <script>
   const sinceInput = document.querySelector("input[name='since']");
   const submitBtn = document.querySelector("#submit-btn");
@@ -108,12 +108,14 @@
       map: map,
     });
 
+
     function initializeFlatpickr() {
         flatpickr(sinceInput, {
             dateFormat: "Y-m-d",
             locale: "ko",
         });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         initializeFlatpickr();
     });

@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.predix.member.domain.Member;
 import project.predix.sales.domain.Sales;
 import project.predix.sales.dto.SalesCreateRequestDto;
 import project.predix.sales.repository.SalesRepository;
+import project.predix.store.domain.entity.Store;
+import project.predix.store.repository.StoreRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,27 +22,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SalesService {
 
     private final SalesRepository salesRepository;
+    private final StoreRepository storeRepository;
 
     @Transactional
     public List<SalesCreateRequestDto> salesDataSortedAndSave(
-            List<SalesCreateRequestDto> requestDtos){
+            List<SalesCreateRequestDto> dtos, Member member){
+        Store store = storeRepository.findByMember(member)
+                .orElseThrow(() -> new IllegalStateException("해당 멤버의 스토어가 없습니다."));
 
-        List<SalesCreateRequestDto> sortedDtos = sortedAndAddNumToList(requestDtos);
+        salesRepository.deleteByStore(store);
 
-        for (SalesCreateRequestDto dto : sortedDtos) {
-            Sales sales = Sales.of(dto);
-            salesRepository.save(sales);
-        }
-
-        return sortedDtos;
-
-    }
-
-    private static List<SalesCreateRequestDto> sortedAndAddNumToList(List<SalesCreateRequestDto> requestDtos) {
-        AtomicInteger orderCounter = new AtomicInteger(1);
-        return requestDtos.stream()
+        AtomicInteger order = new AtomicInteger(1);
+        List<Sales> salesEntities = dtos.stream()
                 .sorted(Comparator.comparing(SalesCreateRequestDto::getStartDate))
-                .peek(dto -> dto.setOrderNum(orderCounter.getAndIncrement()))
+                .peek(dto -> dto.setOrderNum(order.getAndIncrement()))
+                .map(Sales::of)
+                .peek(store::assignSales)
                 .toList();
+
+        salesRepository.saveAll(salesEntities);
+
+        return dtos;
     }
+
+
 }

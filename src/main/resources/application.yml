@@ -24,7 +24,7 @@ spring:
         hibernate:
           format_sql: true # SQL 쿼리를 보기 좋게 포맷팅
 jwt:
-  secret: "${JWT_SECRET:afnidsosf-sajfsdfoao-jasdflsadflkls-124nl124klk-lda}"
+  secret: "${JWT_SECRET:your-very-long-and-secure-secret-key-that-is-at-least-sixty-four-characters-long-for-HS512-algorithm-security-purposes-and-must-be-randomly-generated-and-kept-secret-do-not-use-this-example-key-in-production-ever-it-is-just-for-demonstration}"
   access-ttl: 900000
   refresh-ttl: 2592000000
 
@@ -36,3 +36,11 @@ server:
     key-store-password: 123456
     key-store-type: PKCS12
     key-alias: predix-ssl
+    client-auth: none
+
+logging:
+  level:
+    root: DEBUG
+    org:
+      springframework:
+        security: DEBUG

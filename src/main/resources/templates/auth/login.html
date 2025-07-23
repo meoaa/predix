@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>로그인</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         * {
           box-sizing: border-box;
@@ -123,8 +124,29 @@
         <a href="/signup" class="signup-btn">
             <button type="button" class="signup-btn">회원가입</button>
         </a>
-        <button type="submit" class="login-btn">로그인</button>
+        <button type="button" class="login-btn">로그인</button>
     </form>
 </div>
 </body>
+<script>
+    const loginBtn = document.querySelector(".login-btn");
+    loginBtn.addEventListener("click",() =>{
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#password").value;
+        const data = {username , password}
+
+        $.ajax({
+            url : "/api/auth/login",
+            method: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response){
+                console.log(response);
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    })
+</script>
 </html>

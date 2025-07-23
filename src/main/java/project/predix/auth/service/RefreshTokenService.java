@@ -1,16 +1,15 @@
 package project.predix.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import project.predix.auth.JwtProperties;
 import project.predix.auth.domain.RefreshToken;
 import project.predix.auth.repository.RefreshTokenRepository;
 import project.predix.member.domain.Member;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +20,17 @@ public class RefreshTokenService {
     private final JwtProperties props;
 
     @Transactional
-    public RefreshToken create(Member member, String token){
-        refreshTokenRepository.deleteByMember(member);
-        RefreshToken refreshToken = new RefreshToken(
-                member,
-                token,
-                Instant.now().plusMillis(props.refreshTtl())
-        );
-        return refreshTokenRepository.save(refreshToken);
+    public void createOrUpdateRefreshToken(Member member, String token){
+        Optional<RefreshToken> foundToken = refreshTokenRepository.findByMember(member);
+        RefreshToken refreshToken;
+        if(foundToken.isPresent()){
+            refreshToken = foundToken.get();
+            refreshToken.updateToken(token ,Instant.now().plusMillis(props.refreshTtl()));
+        }else{
+            refreshToken = new RefreshToken(member, token, Instant.now().plusMillis(props.refreshTtl()));
+            refreshTokenRepository.save(refreshToken);
+        }
+
     }
 
     public Member validateAndGetMember(String token){
