@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.predix.auth.dto.SignUpRequestDto;
 import project.predix.auth.dto.SignUpResponseDto;
+import project.predix.exception.DuplicateEmailException;
+import project.predix.exception.DuplicateUsernameException;
 import project.predix.member.domain.Member;
 import project.predix.member.domain.Role;
 import project.predix.member.repository.MemberRepository;
@@ -21,7 +23,7 @@ public class MemberService {
     @Transactional
     public SignUpResponseDto create(SignUpRequestDto dto){
         if(memberRepository.existsByUsername(dto.getUsername())){
-            throw new IllegalStateException("이미 사용 중인 ID");
+            throw new DuplicateUsernameException(dto.getUsername());
         }
 
         Member member = new Member(
@@ -33,6 +35,19 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
         return new SignUpResponseDto(savedMember);
+    }
+
+    public String checkUsername(String username){
+        if(memberRepository.existsByUsername(username)){
+            throw new DuplicateUsernameException();
+        }
+        return username;
+    }
+    public String checkDuplicateEmail(String email){
+        if(memberRepository.existsByEmail(email)){
+            throw new DuplicateEmailException();
+        }
+        return email;
     }
 
 }

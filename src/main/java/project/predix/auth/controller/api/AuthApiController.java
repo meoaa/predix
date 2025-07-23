@@ -2,8 +2,8 @@ package project.predix.auth.controller.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,11 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import project.predix.auth.JwtProvider;
 import project.predix.auth.dto.LoginRequestDto;
@@ -32,6 +28,7 @@ import project.predix.member.service.MemberService;
 import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -40,7 +37,7 @@ public class AuthApiController {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
+
     private final RefreshTokenService refreshTokenService;
 
     //회원가입
@@ -95,4 +92,16 @@ public class AuthApiController {
                 .body(ApiResponse.of(200, "토큰 재발급 완료", new TokenResponseDto(newAccess, refreshToken)));
     }
 
+
+    @GetMapping("/check/username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username){
+        String checkedUsername = memberService.checkUsername(username);
+        return ResponseEntity.ok(checkedUsername);
+    }
+
+    @GetMapping("/check/email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+        String checkedEmail = memberService.checkDuplicateEmail(email);
+        return ResponseEntity.ok(checkedEmail);
+    }
 }

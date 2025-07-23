@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>로그인</title>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: 'Helvetica Neue', sans-serif;
+          background: linear-gradient(to right, #e0eafc, #cfdef3);
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .login-wrapper {
+          background-color: white;
+          padding: 3rem 2rem;
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 380px;
+          transition: 0.3s ease;
+        }
+
+        .login-wrapper:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-wrapper h2 {
+          text-align: center;
+          margin-bottom: 2rem;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .form-group {
+          margin-bottom: 1.2rem;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.4rem;
+          font-size: 0.9rem;
+          color: #444;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+          width: 100%;
+          padding: 0.7rem;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          font-size: 1rem;
+          background-color: #f9f9f9;
+          transition: border-color 0.2s;
+        }
+
+        input:focus {
+          border-color: #007bff;
+          outline: none;
+          background-color: #fff;
+        }
+
+        .signup-btn,
+        .login-btn {
+          width: 100%;
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .signup-btn {
+          background-color: #6c757d;
+          color: white;
+          margin-bottom: 0.8rem;
+        }
+
+        .signup-btn:hover {
+          background-color: #5a6268;
+        }
+
+        .login-btn {
+          background-color: #007bff;
+          color: white;
+        }
+
+        .login-btn:hover {
+          background-color: #0056b3;
+        }
+
+        @media (max-width: 400px) {
+          .login-wrapper {
+            padding: 2rem 1.5rem;
+          }
+        }
+        #username-error{
+            color: red;
+        }
+        #username-success{
+            color: blue;
+        }
+
+        #password-message{
+            color: red;
+        }
+
+        #password-message.valid{
+            color: blue;
+        }
+        #password_check_message{
+            color: red;
+        }
+        #password_check_message.valid{
+            color:blue;
+        }
+        #email_message{
+            color: red;
+        }
+        #email_message.valid{
+            color: blue;
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="login-wrapper">
+    <h2>회원가입</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" placeholder="아이디를 입력해주세요." required />
+            <span id="username-error"></span>
+            <span id="username-success"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required />
+            <span id="password-message"></span>
+        </div>
+        <div class="form-group">
+            <label for="password_check">비밀번호 확인</label>
+            <input type="password" id="password_check" name="password_check" placeholder="••••••••" required />
+            <span id="password_check_message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+            <span id="email_message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력해주세요." required />
+        </div>
+        <button type="button" class="signup-btn">회원가입</button>
+        <button type="submit" class="login-btn">로그인 화면</button>
+    </form>
+</div>
+</body>
+<script>
+    const usernameInput = document.querySelector("#username");
+    const passwordInput = document.getElementById('password');
+    const passwordCheckInput = document.querySelector("#password_check");
+    const emailInput = document.querySelector("#email");
+    const nicknameInput = document.querySelector("#nickname");
+
+    const passwordMessage = document.getElementById('password-message');
+    const passwordCheckMessage = document.querySelector("#password_check_message");
+    const emailMessage = document.querySelector("#email_message");
+
+
+    let isUsernameValid = false;
+    let isPasswordValid = false;
+    let isPasswordCheckValid = false;
+    let isEmailValid = false;
+    let isNicknameValid = false;
+
+    usernameInput.addEventListener("change",checkUsername);
+    function checkUsername() {
+        const errorSpan = document.querySelector("#username-error");
+        const spanTag = document.querySelector("#username-success");
+        spanTag.innerText = "";
+        errorSpan.innerText = "";
+        let errorMessage = null;
+        const inputValue = usernameInput.value;
+        isUsernameValid = false;
+
+        if(inputValue.length < 3){
+            errorMessage = "아이디는 최소 6자 이상이어야 합니다";
+            errorSpan.innerText = errorMessage;
+            return false;
+        }
+
+        if(inputValue.length > 15){
+            errorMessage = "아이디는 15자 미만이어야 합니다.";
+            errorSpan.innerText = errorMessage;
+            return false;
+        }
+
+        $.ajax({
+        url : "/api/auth/check/username",
+        method: "GET",
+        data:{ username: inputValue},
+        success: function(response){
+                spanTag.innerText = "사용 가능한 ID입니다.";
+                isUsernameValid = true;
+            },
+        error: function(error){
+                errorSpan.innerText = error.responseJSON.message;
+                isUsernameValid = false;
+            }
+        })
+        return true;
+    }
+
+
+    passwordInput.addEventListener('input', validatePassword);
+    function validatePassword() {
+        const password = passwordInput.value;
+        isPasswordValid = true;
+        let isValid = true;
+        let message = '';
+
+        if (password.length < 8) {
+            message += '비밀번호는 최소 8자 이상이어야 합니다.<br>';
+            isValid = false;
+            isPasswordValid= false;
+        }
+
+       if (!/\d/.test(password)) {
+            message += '비밀번호는 숫자를 1개 이상 포함해야 합니다.<br>';
+            isValid = false;
+            isPasswordValid= false;
+        }
+
+       if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) {
+            message += '비밀번호는 특수문자를 1개 이상 포함해야 합니다.<br>';
+            isValid = false;
+            isPasswordValid=false;
+        }
+
+        if (isValid) {
+            passwordMessage.textContent = '유효한 비밀번호입니다.';
+            passwordMessage.className = 'valid'; // 유효할 때 클래스 추가
+            isPasswordValid = true;
+        } else {
+            passwordMessage.innerHTML = message;
+            passwordMessage.className = ''; // 유효하지 않을 때 클래스 제거 (기본 red)
+            isPasswordValid = false;
+        }
+        validatePasswordCheck();
+        return isPasswordValid;
+    }
+
+
+    passwordCheckInput.addEventListener('input',validatePasswordCheck );
+    function validatePasswordCheck(){
+        const password = passwordInput.value;
+        isPasswordCheckValid = false
+
+        if(passwordCheckInput.value != password){
+            passwordCheckMessage.textContent = "비밀번호가 일치하지 않습니다.";
+            passwordCheckMessage.className = ""
+            isPasswordCheckValid = false
+            return false;
+        }else{
+            passwordCheckMessage.textContent = "비밀번호가 일치합니다.";
+            passwordCheckMessage.className = "valid"
+            isPasswordCheckValid = true;
+            return true;
+        }
+    }
+
+
+    let checkEmailRegex = false;
+    emailInput.addEventListener("input",validateEmailFormat)
+    function validateEmailFormat(){
+        const email = emailInput.value;
+        const emailRegex = /^[a-zA-Z0-9]([-_.]?[a-zA-Z0-9])*@[a-zA-Z0-9]([-_.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,3}$/;
+        isEmailValid = false;
+
+        if(!emailRegex.test(email)){
+            emailMessage.textContent ="유효하지 않은 이메일 형식입니다.";
+            emailMessage.className = "";
+            checkEmailRegex = false;
+            isEmailValid= false;
+            return false;
+        }else{
+            emailMessage.textContent ="";
+            emailMessage.className = "";
+            checkEmailRegex = true
+            isEmailValid= true;
+            return true;
+        }
+    }
+
+    emailInput.addEventListener("change", checkEmailDuplication);
+    function checkEmailDuplication() {
+        const email = emailInput.value;
+        if(email && checkEmailRegex){
+            isEmailValid = false;
+            $.ajax({
+                url:"/api/auth/check/email",
+                method: "GET",
+                data: {email},
+                success:function(response){
+                    console.log("success: ", response)
+                    emailMessage.textContent ="사용가능한 이메일입니다.";
+                    emailMessage.className = "valid";
+
+                    isEmailValid = true;
+                },
+                error:function(error){
+                    console.log("error : ", error)
+                    emailMessage.textContent = error.responseJSON.message;
+                    emailMessage.className = "";
+                    isEmailValid = false;
+                }
+            })
+        }
+        return isEmailValid;
+    }
+const signupButton = document.querySelector(".signup-btn");
+    signupButton.addEventListener("click", function(event) {
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        // 모든 유효성 검사 함수 호출 및 상태 확인
+        // AJAX 비동기 호출을 사용하는 필드 (아이디, 이메일)는 이미 상태 변수 (isUsernameValid, isEmailValid)에 의해 관리됨
+        const isAllFieldsValid = validatePassword &&
+                                 validatePasswordCheck &&
+                                 validateEmailFormat && // 형식 검사
+                                 isUsernameValid && // 아이디 중복 검사 결과
+                                 isEmailValid // 이메일 중복 검사 결과
+
+        console.log("validatePassword() : ",validatePassword());
+        console.log("validatePasswordCheck(): ",validatePasswordCheck());
+        console.log("validateEmailFormat() : ", validateEmailFormat());
+        console.log("isUsernameValid: ", isUsernameValid);
+        console.log("isEmailValid : ", isEmailValid);
+        if (isAllFieldsValid) {
+            // 모든 필드가 유효하면 폼 데이터를 전송
+            const formData = {
+                username: usernameInput.value,
+                password: passwordInput.value,
+                email: emailInput.value,
+                nickname: nicknameInput.value
+            };
+
+            $.ajax({
+                url: "/api/auth/signup", // 실제 회원가입 API 엔드포인트
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    alert("회원가입이 완료되었습니다!");
+                    // 회원가입 성공 후 리다이렉트 또는 UI 업데이트
+                    window.location.href = "/login"; // 예시: 로그인 페이지로 이동
+                },
+                error: function(error) {
+                    alert("회원가입 실패: " + (error.responseJSON ? error.responseJSON.message : "알 수 없는 오류"));
+                }
+            });
+        } else {
+            alert("입력 정보를 다시 확인해주세요.");
+            // 어떤 필드가 유효하지 않은지 사용자에게 명확히 알려주는 UI 피드백 추가 권장
+        }
+    });
+
+
+</script>
+</html>

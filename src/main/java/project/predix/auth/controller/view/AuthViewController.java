@@ -10,8 +10,12 @@ public class AuthViewController {
 
     @GetMapping("/login")
     public String loginPage(){
-        log.info("here");
         return "/auth/login";
+    }
+
+    @GetMapping("/signup")
+    public String signupPage(){
+        return "/auth/signup";
     }
 
 
