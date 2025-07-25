@@ -40,7 +40,7 @@ server:
 
 logging:
   level:
-    root: DEBUG
+#    root: DEBUG
     org:
       springframework:
         security: DEBUG

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predix - 자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="fragment/navbar :: navbar"></div>
+
+<div class="container">
+  <nav th:replace="fragment/sidebar :: sidebar"></nav>
+
+  <main class="main-content" id="mainContent">
+    <h2>가게 관리</h2>
+    <div class="placeholder-box">
+      <div class="store-info">
+        <h3>가게 정보</h3>
+          <div id="map" style="width:600px; height:350px;"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>가게명</th>
+                <th>카테고리</th>
+                <th>개업일자</th>
+                <th>주소</th>
+                <th>도로명 주소</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="store, storeStat : ${store}">
+                <td th:text="${store.storeName}"></td>
+                <td th:text="${store.category.label}"></td>
+                <td th:text="${store.since}"></td>
+                <td th:text="${store.address}"></td>
+                <td th:text="${store.roadAddress}"></td>
+              </tr>
+            </tbody>
+          </table>
+        <a href="/store/edit">수정하기</a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ff2d0f520dd899b7d5a807d1c4cc2ff5&libraries=services"></script>
+<script th:inline="javascript">
+  const storeName = /*[[${store.storeName}]]*/ 'default_storeName';
+  const x = /*[[${store.x}]]*/ 'default-x';
+  const y = /*[[${store.y}]]*/ 'default-y';
+  console.log(x);
+  console.log(y);
+  var marker = {
+    position: new kakao.maps.LatLng(y, x),
+    text: storeName
+  }
+  var mapContainer = document.querySelector('#map');
+    staticMapOption ={
+      center: new kakao.maps.LatLng(y, x),
+      level: 3,
+      marker: marker
+    }
+  var staticMap = new kakao.maps.StaticMap(mapContainer, staticMapOption);
+</script>
+</html>
