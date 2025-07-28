@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/base :: common_header(~{::title},~{},~{})">
+  <title>자영업자 매출 예측 시스템</title>
+</head>
+<body>
+<div th:replace="fragment/navbar :: navbar"></div>
+<div class="container">
+  <nav th:replace="fragment/sidebar :: sidebar"></nav>
+  <main class="main-content" id="mainContent">
+    <h2>내 프로필 변경</h2>
+    <div>
+      <p>아이디: <span id="username" th:text="${member.username}"></span></p>
+      <p>이메일: <span id="email" th:text="${member.email}"></span></p>
+      <p>닉네임: <input id="nickname" th:value="${member.nickname}"></input></p>
+   </div>
+    <div class="profile-btns">
+      <button id="profile_btn">프로필 변경</button>
+    </div>
+  </main>
+</div>
+</body>
+<script>
+    const profileBtn = document.querySelector("#profile_btn");
+
+    profileBtn.addEventListener("click",() => {
+        const nickname = document.querySelector("#nickname").value;
+
+        const data ={nickname};
+
+        $.ajax({
+            url:"/api/profile/me",
+            method: "PUT",
+            data : JSON.stringify(data),
+            contentType : "application/json",
+            success: function(response){
+                console.log(response)
+            },
+            error: function(error){
+            }
+        })
+    });
+</script>
+</html>

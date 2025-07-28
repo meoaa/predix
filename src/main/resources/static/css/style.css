@@ -37,6 +37,15 @@
         cursor: pointer;
       }
 
+      .navbar .profile_edit{
+          background-color: orange;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          cursor: pointer;
+      }
+
       /* 전체 레이아웃 */
       .container {
         display: flex;

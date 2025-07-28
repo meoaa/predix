@@ -8,8 +8,11 @@ import project.predix.auth.dto.SignUpRequestDto;
 import project.predix.auth.dto.SignUpResponseDto;
 import project.predix.exception.DuplicateEmailException;
 import project.predix.exception.DuplicateUsernameException;
+import project.predix.exception.MemberNotFoundException;
 import project.predix.member.domain.Member;
 import project.predix.member.domain.Role;
+import project.predix.member.dto.ProfileUpdateRequestDto;
+import project.predix.member.dto.ProfileUpdateResponseDto;
 import project.predix.member.repository.MemberRepository;
 
 @Service
@@ -49,5 +52,17 @@ public class MemberService {
         }
         return email;
     }
+
+    @Transactional
+    public ProfileUpdateResponseDto updateProfile(ProfileUpdateRequestDto requestDto, Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.updateMember(requestDto);
+
+        return ProfileUpdateResponseDto.of(member);
+    }
+
+
 
 }

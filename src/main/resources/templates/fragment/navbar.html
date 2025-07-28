@@ -8,8 +8,11 @@
 <body>
 <div class="navbar" th:fragment="navbar">
   <h1>Predix 매출 예측 시스템</h1>
-  <a href="/store"><button class="manage_store">가게관리</button></a>
-  <button class="logout">로그아웃</button>
+  <div class="nav-btns">
+    <a href="/store"><button class="manage_store">가게관리</button></a>
+    <a href="/profile"><button class="profile_edit">프로필보기</button></a>
+    <button class="logout">로그아웃</button>
+  </div>
 </div>
 </body>
 
