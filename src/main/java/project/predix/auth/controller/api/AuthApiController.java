@@ -94,6 +94,29 @@ public class AuthApiController {
                 .body(ApiResponse.of(200, "토큰 재발급 완료", new TokenResponseDto(newAccess, refreshToken)));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(Authentication authentication){
+        if(authentication != null && authentication.getPrincipal() instanceof Member member){
+            refreshTokenService.deleteByMember(member);
+        }
+        // 2) 쿠키 즉시 만료
+        ResponseCookie clearAccess = ResponseCookie.from("ACCESS_TOKEN", "")
+                .httpOnly(true).secure(true).path("/")
+                .maxAge(0)                 // 👉 바로 삭제
+                .sameSite("None")
+                .build();
+
+        // (refresh 토큰을 쿠키에 두고 있다면 같은 방식으로 하나 더)
+        ResponseCookie clearRefresh = ResponseCookie.from("REFRESH_TOKEN", "")
+                .httpOnly(true).secure(true).path("/")
+                .maxAge(0).sameSite("None").build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, clearAccess.toString())
+                .header(HttpHeaders.SET_COOKIE, clearRefresh.toString())
+                .body(ApiResponse.of(200,"로그아웃 완료", null));
+    }
+
 
     @GetMapping("/check/username")
     public ResponseEntity<?> checkUsername(@RequestParam String username){

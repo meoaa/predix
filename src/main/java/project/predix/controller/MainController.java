@@ -12,8 +12,6 @@ public class MainController {
 
     @GetMapping("/")
     public String mainPage(Authentication auth){
-        log.info("hello");
-
         return "index";
 
     }
