@@ -1,0 +1,19 @@
+<html
+    xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common_header(title, links, scripts)">
+
+    <title th:replace="${title}">title</title>
+
+    <!-- 공통-->
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}">
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css}"/>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/toastify-js}"></script>
+    <script th:src="@{/js/common.js}" type="module"></script>
+
+    <!-- 추가-->
+    <th:block th:replace="${links}"/>
+    <th:block th:replace="${scripts}"/>
+
+</head>
+
