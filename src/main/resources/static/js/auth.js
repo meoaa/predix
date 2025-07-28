@@ -16,6 +16,3 @@ export function setupLogout(){
             }
        }
 
-document.addEventListener("DOMContentLoaded", function() {
-  setupLogout();
-});
