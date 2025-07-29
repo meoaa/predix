@@ -2,6 +2,7 @@ package project.predix.member.controller.view;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +30,7 @@ public class MemberViewController {
     public String editProfile(
             @AuthenticationPrincipal Member authenticatedMember,
             Model model){
-        log.info("hello edit");
+
         ProfileResponseDto responseDto = ProfileResponseDto.from(authenticatedMember);
         model.addAttribute("member", responseDto);
         return "/profile/edit";
@@ -37,7 +38,7 @@ public class MemberViewController {
 
     @GetMapping("/password")
     public String changePassword(){
-        log.info("hello password");
+
         return "/profile/password";
     }
 }

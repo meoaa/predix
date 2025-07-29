@@ -17,6 +17,7 @@ spring:
       enabled: true
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
       show-sql: true
@@ -42,5 +43,12 @@ logging:
   level:
 #    root: DEBUG
     org:
+      thymeleaf:
+#        TemplateEngine: TRACE
       springframework:
-        security: DEBUG
+#        security: DEBUG
+      apache:
+        tomcat:
+          util:
+            net:
+              jsse: INFO

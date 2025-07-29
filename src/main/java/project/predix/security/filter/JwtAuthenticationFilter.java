@@ -25,7 +25,7 @@ import project.predix.auth.JwtProvider;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Component
+
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

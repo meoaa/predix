@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.predix.exception.NotFoundStoreByMemberException;
 import project.predix.member.domain.Member;
+import project.predix.member.repository.MemberRepository;
 import project.predix.store.domain.entity.Store;
 import project.predix.store.dto.CreateRequestDto;
 import project.predix.store.dto.CreateResponseDto;
@@ -21,11 +22,14 @@ import java.util.Optional;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public CreateResponseDto saveStore(CreateRequestDto requestDto, Member member){
+    public CreateResponseDto saveStore(CreateRequestDto requestDto, Long memberId){
+        Member foundMember = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundStoreByMemberException::new);
         Store store = Store.of(requestDto);
-        member.assignStore(store);
+        foundMember.assignStore(store);
         Store savedStore = storeRepository.save(store);
         return new CreateResponseDto(savedStore.getName(),savedStore.getAddress(),savedStore.getSince());
     }

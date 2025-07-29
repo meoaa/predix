@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/base :: common_header(~{::title},~{},~{})">
+<head th:replace="~{layout/base :: common_header(~{::title},~{},~{})}">
     <title>자영업자 매출 예측 시스템</title>
 </head>
 <body>
-<div th:replace="fragment/navbar :: navbar"></div>
+<div th:replace="~{fragment/navbar :: navbar}"></div>
 <div class="container">
-    <nav th:replace="fragment/sidebar :: sidebar"></nav>
+    <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
     <main class="main-content" id="mainContent">
         <h2>내 프로필</h2>
             <div>
@@ -18,7 +18,7 @@
             </div>
             <div class="profile-btns">
                 <a href="/profile/edit">프로필 변경</a>
-                <a href="/proflie/password">비밀번호 변경</a>
+                <a href="/profile/password">비밀번호 변경</a>
             </div>
     </main>
 </div>

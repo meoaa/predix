@@ -28,7 +28,7 @@ public class StoreApiController {
              @AuthenticationPrincipal Member authenticatedMember ){
         log.info("authenticatedMember  : {} ", authenticatedMember );
 
-        CreateResponseDto resDto = storeService.saveStore(requestDto, authenticatedMember);
+        CreateResponseDto resDto = storeService.saveStore(requestDto, authenticatedMember.getId());
         return ResponseEntity.ok(ApiResponse.of(200, "가게 등록이 성공적으로 완료되었습니다.", resDto));
     }
 }

@@ -11,6 +11,7 @@ import project.predix.exception.DuplicateUsernameException;
 import project.predix.exception.MemberNotFoundException;
 import project.predix.member.domain.Member;
 import project.predix.member.domain.Role;
+import project.predix.member.dto.ProfileResponseDto;
 import project.predix.member.dto.ProfileUpdateRequestDto;
 import project.predix.member.dto.ProfileUpdateResponseDto;
 import project.predix.member.repository.MemberRepository;
@@ -61,6 +62,15 @@ public class MemberService {
         member.updateMember(requestDto);
 
         return ProfileUpdateResponseDto.of(member);
+    }
+
+    public ProfileResponseDto findByUsernameOnProfile(String username){
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return ProfileResponseDto.from(member);
+
+
     }
 
 

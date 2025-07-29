@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import java.util.List;
 @Getter
 @Table(name = "tb_member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "store")
 public class Member implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +47,11 @@ public class Member implements UserDetails {
 
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "member",
+    @OneToOne(
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
     private Store store;
 
     public Member(String username, String password, String email, String nickname, Role role) {

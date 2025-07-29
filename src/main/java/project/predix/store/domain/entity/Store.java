@@ -31,8 +31,7 @@ public class Store {
     @Column(name="store_name")
     private String name;
 
-    @JoinColumn(name = "member_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "store", fetch = FetchType.LAZY)
     private Member member;
 
     @Enumerated(EnumType.STRING)
