@@ -1,20 +1,13 @@
-import{ setupLogout } from './auth.js'
-
-export function showToast(message, color) {
+window.showToast = function(message, color, gravity) {
   const background = color;
   Toastify({
     text: message,
     duration: 3000,
-    gravity: "top",
-    position: "center",
-    stopOnFocus: true,
+    gravity: gravity, // 'top' 또는 'bottom'
+    position: "center", // 'left', 'center', 'right'
+    stopOnFocus: true, // 토스트가 활성 상태일 때 자동 숨김 방지
     style: {
       background
     }
   }).showToast();
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  setupLogout();
-
-});
+};

@@ -66,6 +66,9 @@ public class Member implements UserDetails {
     public void updateMember(ProfileUpdateRequestDto dto){
         this.nickname = dto.getNickname();
     }
+    public void changePassword(String newPassword){
+        this.password = newPassword;
+    }
 
     /*  연관관계 메서드 */
     public void assignStore(Store store){

@@ -1,6 +1,7 @@
 package project.predix.member.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +10,10 @@ import project.predix.auth.dto.SignUpResponseDto;
 import project.predix.exception.DuplicateEmailException;
 import project.predix.exception.DuplicateUsernameException;
 import project.predix.exception.MemberNotFoundException;
+import project.predix.exception.PasswordMismatchException;
 import project.predix.member.domain.Member;
 import project.predix.member.domain.Role;
+import project.predix.member.dto.PasswordChangeRequestDto;
 import project.predix.member.dto.ProfileResponseDto;
 import project.predix.member.dto.ProfileUpdateRequestDto;
 import project.predix.member.dto.ProfileUpdateResponseDto;
@@ -19,6 +22,7 @@ import project.predix.member.repository.MemberRepository;
 @Service
 @Transactional(readOnly = true)
 @AllArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -69,8 +73,21 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
 
         return ProfileResponseDto.from(member);
+    }
 
+    @Transactional
+    public ProfileResponseDto checkPasswordAndChange(PasswordChangeRequestDto dto, Member member){
+        Member foundMember = memberRepository.findById(member.getId())
+                .orElseThrow(MemberNotFoundException::new);
 
+        boolean matches = passwordEncoder.matches(dto.getOldPassword(), foundMember.getPassword());
+        if(!matches){
+            throw new PasswordMismatchException();
+        }
+        String newPassword = passwordEncoder.encode(dto.getNewPassword());
+        foundMember.changePassword(newPassword);
+
+        return ProfileResponseDto.from(foundMember);
     }
 
 

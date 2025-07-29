@@ -16,13 +16,15 @@
       <p>닉네임: <input id="nickname" th:value="${member.nickname}"></input></p>
    </div>
     <div class="profile-btns">
-      <button id="profile_btn">프로필 변경</button>
+        <button id="cancel_btn">취소</button>
+        <button id="profile_btn">프로필 변경</button>
     </div>
   </main>
 </div>
 </body>
 <script>
     const profileBtn = document.querySelector("#profile_btn");
+    const cancelBtn = document.querySelector("#cancel_btn");
 
     profileBtn.addEventListener("click",() => {
         const nickname = document.querySelector("#nickname").value;
@@ -35,11 +37,16 @@
             data : JSON.stringify(data),
             contentType : "application/json",
             success: function(response){
-                console.log(response)
+                 window.location.href="/profile?profile_success";
             },
             error: function(error){
+                 showToast(error.responseJSON.message,"red","bottom");
             }
         })
     });
+
+    cancelBtn.addEventListener("click",()=>{
+        history.back();
+    })
 </script>
 </html>

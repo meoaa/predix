@@ -23,4 +23,22 @@
     </main>
 </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+     const params = new URLSearchParams(location.search);
+
+     if (params.get("pw_success") !== null) {
+       showToast("비밀번호가 성공적으로 변경되었습니다.", "blue","bottom");
+     }
+
+     if (params.get("profile_success") !== null) {
+        showToast("프로필이 성공적으로 변경되었습니다.", "blue","bottom");
+     }
+
+
+     if (params.has("pw_success") || (params.has("profile_success") ) {
+       history.replaceState(null, "", location.pathname);
+     }
+   });
+</script>
 </html>

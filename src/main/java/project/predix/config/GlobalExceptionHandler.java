@@ -10,6 +10,7 @@ import project.predix.common.ErrorResponse;
 import project.predix.exception.DuplicateEmailException;
 import project.predix.exception.DuplicateUsernameException;
 import project.predix.exception.MemberNotFoundException;
+import project.predix.exception.PasswordMismatchException;
 
 @ControllerAdvice
 @Slf4j
@@ -35,6 +36,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleMemberNotFoundException(MemberNotFoundException ex){
         return new ResponseEntity<>(ErrorResponse.of(400, ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handlePasswordMismatchException(PasswordMismatchException ex){
+        return new ResponseEntity<>(ErrorResponse.of(400,ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

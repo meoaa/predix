@@ -2,19 +2,12 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<head th:replace="~{layout/base :: common_header(~{::title},~{::link}, ~{})}">
   <title>자영업자 매출 예측 시스템</title>
-  <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}">
-  <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js}"></script>
-  <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css}"/>
-  <script th:src="@{https://cdn.jsdelivr.net/npm/toastify-js}"></script>
-  <script th:src="@{/js/common.js}" type="module"></script>
-  <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-  />
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
 </head>
 <body>
 <div th:replace="fragment/navbar :: navbar"></div>
@@ -86,6 +79,8 @@
   </main>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ff2d0f520dd899b7d5a807d1c4cc2ff5&libraries=services"></script>
 <script>
@@ -187,8 +182,10 @@
       dataType: "json",
       data: jsonPayLoad,
       success: function(response){
-        alert("가게가 성공적으로 등록되었습니다.");
-        window.location.href=window.location.href;
+        window.location.href="/store?success";
+      },
+      error: function(error){
+        console.log(error);
       }
     });
   })
