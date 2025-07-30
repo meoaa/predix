@@ -42,6 +42,8 @@ public class Sales {
     @Column(name = "type")
     private SalesType type;
 
+    private String label;
+
     public Sales(Long amount) {
         this.amount = amount;
     }
@@ -51,12 +53,14 @@ public class Sales {
             LocalDate startDate,
             LocalDate endDate,
             int orderNum,
-            SalesType type) {
+            SalesType type,
+            String label) {
         this.amount = amount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderNum = orderNum;
         this.type = type;
+        this.label = label;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -66,7 +70,8 @@ public class Sales {
                 dto.getStartDate(),
                 dto.getEndDate(),
                 dto.getOrderNum(),
-                dto.getType());
+                dto.getType(),
+                dto.getLabel());
     }
 
     /* 연관관계 메서드*/

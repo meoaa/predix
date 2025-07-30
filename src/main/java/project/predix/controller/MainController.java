@@ -21,4 +21,9 @@ public class MainController {
        return "sales_record/input";
     }
 
+    @GetMapping("/chart")
+    public String chartPage(){
+        return "chart/chart";
+    }
+
 }

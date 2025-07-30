@@ -9,6 +9,8 @@ import project.predix.sales.domain.Sales;
 import project.predix.sales.domain.SalesType;
 import project.predix.store.domain.entity.Store;
 
+import java.util.List;
+
 public interface SalesRepository extends JpaRepository<Sales, Long> {
 
     @Modifying(flushAutomatically = true)
@@ -19,4 +21,6 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
     """)
     int deleteByStoreIdAndType(@Param("storeId") Long storeId,
                                @Param("type") SalesType type);
+
+    List<Sales> findAllByStoreIdOrderByOrderNum(long storeId);
 }

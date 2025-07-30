@@ -124,6 +124,7 @@
        const startDate = row.querySelector("input[name='start_date']").value;
        const endDate = row.querySelector("input[name='end_date']").value;
        const amount = row.querySelector("input[name='amount']").value;
+       const label = row.querySelector(".flatpickr-input").value;
 
        if (!startDate || !endDate || !amount) {
          checkValue = false;
@@ -135,6 +136,7 @@
            endDate,
            amount: parseFloat(amount),
            type: salesType,
+           label
          });
        }
      });
@@ -152,11 +154,20 @@
      const jsonData = JSON.stringify(salesData);
 
      $.ajax({
-       url: "/api/sales/create",
+       url: "/api/sales",
        method: "POST",
        contentType: "application/json",
        data: jsonData,
        dataType: "json",
+       success: function(response){
+        if(response.success){
+          window.location.href="/chart?added";
+        }
+
+       },
+       error: function(error){
+        console.error(error);
+       }
      });
    }
 
@@ -288,7 +299,7 @@
      inputItemBox.appendChild(row);
 
      flatpickr(monthInput, {
-       dateFormat: "Y년 m월",
+       dateFormat: "Y년 n월",
        locale: "ko",
        onChange: function ([selectedDate]) {
          if (!selectedDate) return;
