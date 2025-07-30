@@ -134,6 +134,9 @@
         inputTag.type = "number";
         inputTag.name = "amount";
         inputTag.placeholder = "매출액을 입력해주세요.";
+        inputTag.addEventListener("focus",function(){
+            console.log("heelo");
+        })
 
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "제거";

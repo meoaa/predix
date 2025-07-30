@@ -18,7 +18,7 @@ public class MainController {
 
     @GetMapping("/sales")
     public String salesForm() {
-       return "input";
+       return "sales_record/input";
     }
 
 }
