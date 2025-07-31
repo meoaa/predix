@@ -1,0 +1,188 @@
+/* sales.css */
+
+.main-content .placeholder-box {
+  max-width: 640px;
+}
+
+/* ─── 월간/주간 토글 버튼 ─── */
+.placeholder-box .type-toggle {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: flex-start;
+}
+
+.placeholder-box .type-toggle input[type="radio"] {
+  display: none;
+}
+
+.placeholder-box .type-toggle label {
+  flex: none;
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #3b82f6;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #3b82f6;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.placeholder-box .type-toggle label:hover {
+  background-color: #eff6ff;
+}
+
+.placeholder-box .type-toggle input[type="radio"]:checked + label {
+  background-color: #3b82f6;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+/* ─── 입력 행 스타일 ─── */
+.input_row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  background: #fafafa;
+}
+
+/* 월/주 선택 필드 너비 고정 */
+.input_row input.month-picker,
+.input_row input.week-picker {
+  flex: none;
+  width: 180px;
+}
+
+/* 매출액 입력만 flex-grow */
+.input_row input[type="number"] {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* 날짜 범위 텍스트 */
+.input_row p {
+  flex: 1;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* 제거 버튼 */
+.input_row button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  background-color: #ef4444;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.input_row button:hover {
+  background-color: #b91c1c;
+}
+
+/* ─── 하단 버튼 박스 ─── */
+#btn_box {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+/* 추가 버튼 (파란색) */
+#btn_box button:nth-child(1) {
+  flex: 1;
+  padding: 0.6rem;
+  background-color: #3b82f6;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+#btn_box button:nth-child(1):hover {
+  background-color: #2563eb;
+}
+
+/* 제출 버튼 (빨간색) */
+#btn_box button:nth-child(2) {
+  flex: 1;
+  padding: 0.6rem;
+  background-color: #ef4444;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+#btn_box button:nth-child(2):hover {
+  background-color: #b91c1c;
+}
+
+/* ─── 반응형 ─── */
+@media (max-width: 768px) {
+  .placeholder-box .type-toggle,
+  #btn_box {
+    flex-direction: column;
+  }
+  .input_row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .input_row input.month-picker,
+  .input_row input.week-picker,
+  .input_row input[type="number"] {
+    width: 100%;
+    flex: none;
+  }
+}
+/* ─── 입력 필드 스타일 업그레이드 ─── */
+.input_row input.month-picker,
+.input_row input.week-picker,
+.input_row input[type="number"] {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 플레이스홀더 색상 */
+.input_row input.month-picker::placeholder,
+.input_row input.week-picker::placeholder,
+.input_row input[type="number"]::placeholder {
+  color: #999;
+}
+
+/* 포커스시 강조 */
+.input_row input.month-picker:focus,
+.input_row input.week-picker:focus,
+.input_row input[type="number"]:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+/* ── 주간 날짜 표시 줄( p )은 자동 확장 끄기 ── */
+.input_row p {
+  flex: none;          /* 남는 공간 차지 안 함 */
+  width: auto;         /* 내용물만큼만 넓이 */
+  margin-left: 0.5rem; /* 숫자 입력칸과 약간 간격 */
+  text-align: right;   /* 우측 정렬해서 깔끔하게 */
+}
+
+/* ── 금액 입력칸만 남은 공간 전부 차지 ── */
+.input_row input[type="number"] {
+  flex: 1 1 auto;     /* flex-grow:1, flex-shrink:1 */
+  min-width: 100px;   /* 너무 작아지지 않도록 */
+}

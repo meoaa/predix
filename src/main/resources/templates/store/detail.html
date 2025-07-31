@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/base :: common_header(~{::title},~{}, ~{})">
+<head th:replace="~{layout/base :: common_header(~{::title},~{::link}, ~{})}">
   <title>자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/store.css}" />
 </head>
+<style>
+
+</style>
 <body>
-<div th:replace="fragment/navbar :: navbar"></div>
+<div th:replace="~{fragment/navbar :: navbar}"></div>
 <div class="container">
-  <nav th:replace="fragment/sidebar :: sidebar"></nav>
+  <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
   <main class="main-content" id="mainContent">
     <h2>가게 관리</h2>
     <div class="placeholder-box">

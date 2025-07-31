@@ -1,0 +1,73 @@
+   /* profile.css */
+
+/* ─── 본문 중앙 정렬 & 최대 너비 ─── */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+.main-content > div:first-of-type {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ─── 제목 ─── */
+.main-content h2 {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 0 1rem;
+  font-size: 1.6rem;
+  color: #1f2937;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 0.25rem;
+}
+
+/* ─── 프로필 정보 텍스트 ─── */
+.main-content > div:first-of-type p {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0.5rem 0;
+}
+.main-content > div:first-of-type p span {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ─── 버튼 그룹 ─── */
+.profile-btns {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+}
+.profile-btns a {
+  flex: 1;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  background-color: #3b82f6;
+  color: #fff;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.profile-btns a:hover {
+  background-color: #2563eb;
+}
+
+/* ─── 반응형 ─── */
+@media (max-width: 600px) {
+  .main-content,
+  .main-content > div:first-of-type,
+  .profile-btns {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  .profile-btns {

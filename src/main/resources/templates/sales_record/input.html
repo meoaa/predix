@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/base :: common_header(~{::title},~{::link}, ~{})">
+<head th:replace="~{layout/base :: common_header(~{::title},~{::link}, ~{})}">
   <title>자영업자 매출 예측 시스템</title>
 
 <!-- 임시 <script type="text/javascript" defer th:src="@{/js/sales.js}"></script>-->
@@ -15,21 +15,25 @@
           rel="stylesheet"
           th:href="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css}"
   />
+
+  <link rel="stylesheet" th:href="@{/css/sales.css}" />
 </head>
 <body>
-<div th:replace="fragment/navbar :: navbar"></div>
+<div th:replace="~{fragment/navbar :: navbar}"></div>
 
 <div class="container">
-  <nav th:replace="fragment/sidebar :: sidebar"></nav>
+  <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
 
   <main class="main-content" id="mainContent">
     <h2>매출 입력</h2>
     <div class="placeholder-box">
       <h3>유형 선택</h3>
+      <div class="type-toggle">
       <input name="type" id="type_month" type="radio" value="month" />
       <label for="type_month">월간</label>
       <input name="type" id="type_week" type="radio" value="week" />
       <label for="type_week">주간</label>
+      </div>
       <div id="input_box">
         <div id="input_item_box"></div>
         <div id="btn_box"></div>
@@ -41,7 +45,7 @@
 <script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr}"></script>
 
 <script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js}"></script>
-<!-- WeekSelect Plugin -->
+
 <script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.js}"></script>
 
 <script>

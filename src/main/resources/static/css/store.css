@@ -1,0 +1,92 @@
+  /* store.css (or 추가할 sales.css 아래에 덮어쓰기) */
+
+/* ─── placeholder-box 중앙 정렬 & 여백 ─── */
+.main-content .placeholder-box {
+  max-width: 800px;
+
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ─── 가게 정보 헤더 ─── */
+.store-info h3 {
+  font-size: 1.4rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #3b82f6;
+  display: inline-block;
+  padding-bottom: 0.25rem;
+}
+
+/* ─── 지도 박스 ─── */
+#map {
+  width: 100%;
+  max-width: 600px;
+  height: 350px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+/* ─── 가게 정보 테이블 ─── */
+.store-info table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.store-info table thead th {
+  background-color: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #2563eb;
+}
+
+.store-info table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.store-info table tbody td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+/* ─── 링크/버튼 스타일 (수정하기 등) ─── */
+.store-info a.button,
+.store-info button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: #fff;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.store-info a.button:hover,
+.store-info button:hover {
+  background-color: #2563eb;
+}
+
+/* ─── 반응형 ─── */
+@media (max-width: 768px) {
+  #map {
+    height: 250px;
+  }
+  .store-info table thead th,
+  .store-info table tbody td {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}

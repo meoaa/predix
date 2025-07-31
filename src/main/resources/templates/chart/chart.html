@@ -46,11 +46,13 @@
         <div class="placeholder-box">
             <div class="chart-wrapper">
                 <h2>월간 매출</h2>
+                <div id="monthlyAverageSales" class="average-sales-info"></div>
                 <canvas id="monthlySalesChart"></canvas>
             </div>
 
             <div class="chart-wrapper">
                 <h2>주간 매출</h2>
+                <div id="weeklyAverageSales" class="average-sales-info"></div>
                 <canvas id="weeklySalesChart"></canvas>
             </div>
         </div>
@@ -63,6 +65,9 @@
       const monthCtx = document.querySelector("#monthlySalesChart");
       const weekCtx = document.querySelector("#weeklySalesChart");
 
+      const monthlyAverageSalesDiv = document.querySelector("#monthlyAverageSales");
+      const weeklyAverageSalesDiv = document.querySelector("#weeklyAverageSales");
+
       const params = new URLSearchParams(location.search);
       if (params.get("added") !== null) {
         showToast("성공적으로 등록되었습니다.", "blue","bottom");
@@ -73,12 +78,9 @@
       }
 
       $.ajax({
-        url: "/api/sales", // 이 URL이 storeId를 어떻게 처리하는지 확인 필요 (예: /api/sales?storeId=1)
+        url: "/api/sales",
         method: "GET",
         success: function(response){
-            // 백엔드 응답 구조가 { success: true, data: { MONTH: {}, WEEK: {} } } 형태라고 가정
-            // console.log(response); // 응답 데이터 구조를 확인해보면 도움이 됩니다.
-
             if(response.success){
                 const salesChartData = response.data; // 백엔드에서 넘어온 가공된 차트 데이터
 
@@ -88,7 +90,7 @@
                         type: 'bar', // 월간은 막대 차트가 일반적
                         data: {
                             labels: salesChartData.MONTH.labels, // response.data.MONTH.labels
-                            datasets: [{ // **여기 'datasets'입니다!**
+                            datasets: [{
                                 label: salesChartData.MONTH.title || '월별 판매량', // 백엔드에서 받은 title 사용
                                 data: salesChartData.MONTH.data, // response.data.MONTH.data
                                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
@@ -123,6 +125,10 @@
                             }
                         }
                     });
+
+                     const totalMonthlySales = salesChartData.MONTH.data.reduce((sum, value) => sum + value, 0);
+                    const averageMonthlySales = salesChartData.MONTH.data.length > 0 ? totalMonthlySales / salesChartData.MONTH.data.length : 0;
+                    monthlyAverageSalesDiv.textContent = `평균 월간 매출: ${averageMonthlySales.toLocaleString()}원`;
                 } else {
                     console.warn("월간 매출 데이터가 없습니다.");
                     // 차트를 그리지 않거나, "데이터 없음" 메시지를 표시할 수 있습니다.
@@ -171,6 +177,10 @@
                             }
                         }
                     });
+                    const totalWeeklySales = salesChartData.WEEK.data.reduce((sum, value) => sum + value, 0);
+                    const averageWeeklySales = salesChartData.WEEK.data.length > 0 ? totalWeeklySales / salesChartData.WEEK.data.length : 0;
+                    weeklyAverageSalesDiv.textContent = `평균 주간 매출: ${averageWeeklySales.toLocaleString()}원`;
+
                 } else {
                     console.warn("주간 매출 데이터가 없습니다.");
                 }

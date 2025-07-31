@@ -8,18 +8,21 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
+  <link rel="stylesheet"
+        th:href="@{/css/store-create.css}" />
 </head>
+
 <body>
-<div th:replace="fragment/navbar :: navbar"></div>
+<div th:replace="~{fragment/navbar :: navbar}"></div>
 
 <div class="container">
-  <nav th:replace="fragment/sidebar :: sidebar"></nav>
+  <nav th:replace="~{fragment/sidebar :: sidebar}" ></nav>
 
   <main class="main-content" id="mainContent">
     <h2>가게 관리</h2>
     <div class="placeholder-box">
       <div id="store-input-box">
-        <label>가게명:<input type="text" name="store_name" placeholder="가게명을 입력해주세요."></label>
+        <label>가게명: <input type="text" name="store_name" placeholder="가게명을 입력해주세요."></label>
         <br>
         <label>분류 :
           <select id="category" name="category">
