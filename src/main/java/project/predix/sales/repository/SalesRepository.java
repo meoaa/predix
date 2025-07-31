@@ -23,4 +23,7 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
                                @Param("type") SalesType type);
 
     List<Sales> findAllByStoreIdOrderByOrderNum(long storeId);
+
+    List<Sales> findAllByStoreIdAndTypeOrderByStartDate(long storeId, SalesType type);
+
 }

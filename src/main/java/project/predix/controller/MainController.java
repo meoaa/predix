@@ -26,4 +26,9 @@ public class MainController {
         return "chart/chart";
     }
 
+    @GetMapping("/prediction")
+    public String predictionPage(){
+        return "predix/prediction";
+    }
+
 }

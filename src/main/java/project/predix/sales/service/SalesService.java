@@ -15,6 +15,10 @@ import project.predix.sales.repository.SalesRepository;
 import project.predix.store.domain.entity.Store;
 import project.predix.store.repository.StoreRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +97,16 @@ public class SalesService {
                                 }
                         )
                 ));
+    }
+
+    public Path exportCsv(long storeId, SalesType type) throws IOException{
+        Path tmp = Files.createTempFile("sales_", ".csv");
+        List<Sales> rows = salesRepository.findAllByStoreIdAndTypeOrderByStartDate(storeId, type);
+        for(Sales s : rows){
+            String line = s.getStartDate() + "," + s.getAmount() + "\n";
+            Files.writeString(tmp,line, StandardOpenOption.APPEND);
+        }
+        return tmp;
     }
 
 
