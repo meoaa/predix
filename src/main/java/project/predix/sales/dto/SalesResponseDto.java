@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @ToString
 public class SalesResponseDto {
+    private Long id;
     private Long amount;
 
     private LocalDateTime createdAt;
@@ -26,30 +27,29 @@ public class SalesResponseDto {
 
     private String label;
 
-    private SalesResponseDto(Long amount,
+    private SalesResponseDto(Long id,
+                             Long amount,
                              LocalDateTime createdAt,
                              LocalDate startDate,
                              LocalDate endDate,
-                             int orderNum,
                              SalesType type,
                              String label) {
+        this.id = id;
         this.amount = amount;
         this.createdAt = createdAt;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.orderNum = orderNum;
         this.type = type;
         this.label = label;
-
     }
 
     public static SalesResponseDto of(Sales sales){
         return new SalesResponseDto(
+                sales.getId(),
                 sales.getAmount(),
                 sales.getCreatedAt(),
                 sales.getStartDate(),
                 sales.getEndDate(),
-                sales.getOrderNum(),
                 sales.getType(),
                 sales.getLabel());
     }

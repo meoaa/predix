@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.predix.sales.dto.SalesCreateRequestDto;
+import project.predix.sales.dto.SalesUpsertRequestDto;
 import project.predix.store.domain.entity.Store;
 
 import java.time.LocalDate;
@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "tb_sales_record")
+@Table(name = "tb_sales_record", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"store_id", "type", "start_date"})
+})
 public class Sales {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +37,6 @@ public class Sales {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "order_num")
-    private int orderNum;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private SalesType type;
@@ -52,26 +51,31 @@ public class Sales {
             Long amount,
             LocalDate startDate,
             LocalDate endDate,
-            int orderNum,
             SalesType type,
             String label) {
         this.amount = amount;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.orderNum = orderNum;
         this.type = type;
         this.label = label;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static Sales of(SalesCreateRequestDto dto){
+    public static Sales of(SalesUpsertRequestDto dto){
         return new Sales(
                 dto.getAmount(),
                 dto.getStartDate(),
                 dto.getEndDate(),
-                dto.getOrderNum(),
                 dto.getType(),
                 dto.getLabel());
+    }
+
+    /**
+     * 매출 정보를 업데이트 하는 메서드
+     * @param amount 새로운 매출액
+     */
+    public void updateAmount(Long amount) {
+        this.amount = amount;
     }
 
     /* 연관관계 메서드*/

@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.predix.exception.NotFoundSalesRecordException;
 import project.predix.exception.NotFoundStoreByMemberException;
+import project.predix.exception.PermissionDeniedException;
 import project.predix.member.domain.Member;
 import project.predix.sales.domain.Sales;
 import project.predix.sales.domain.SalesType;
 import project.predix.sales.dto.SalesChartDataDto;
-import project.predix.sales.dto.SalesCreateRequestDto;
+import project.predix.sales.dto.SalesUpsertRequestDto;
 import project.predix.sales.dto.SalesResponseDto;
 import project.predix.sales.repository.SalesRepository;
 import project.predix.store.domain.entity.Store;
@@ -19,10 +21,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,27 +37,32 @@ public class SalesService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public List<SalesCreateRequestDto> salesDataSortedAndSave(
-            List<SalesCreateRequestDto> dtos, Member member){
+    public List<SalesResponseDto> salesDataSortedAndSave(
+            List<SalesUpsertRequestDto> dtos, Member member){
+
         Store store = storeRepository.findByMember(member)
                 .orElseThrow(NotFoundStoreByMemberException::new);
 
-        SalesType type = dtos.get(0).getType();
+        List<Sales> newSalesList = new ArrayList<>();
 
-        long l = salesRepository.deleteByStoreIdAndType(store.getId(), type);
-        System.out.println("l = " + l);
+        for(SalesUpsertRequestDto dto : dtos){
+            if(dto.getId() == null){
+                Sales newSales = Sales.of(dto);
+                store.assignSales(newSales);
+                newSalesList.add(newSales);
+            }else{
+                Sales existingSales = salesRepository.findById(dto.getId())
+                        .orElseThrow(NotFoundSalesRecordException::new);
+                existingSales.updateAmount(dto.getAmount());
+            }
+        }
+        salesRepository.saveAll(newSalesList);
 
-        AtomicInteger order = new AtomicInteger(1);
-        List<Sales> salesEntities = dtos.stream()
-                .sorted(Comparator.comparing(SalesCreateRequestDto::getStartDate))
-                .peek(dto -> dto.setOrderNum(order.getAndIncrement()))
-                .map(Sales::of)
-                .peek(store::assignSales)
+        List<Sales> finalSalesList = salesRepository.findAllByStoreIdAndTypeOrderByStartDate(store.getId(), dtos.get(0).getType());
+
+        return finalSalesList.stream()
+                .map(SalesResponseDto::of)
                 .toList();
-
-        salesRepository.saveAll(salesEntities);
-
-        return dtos;
     }
 
     public List<SalesResponseDto> getSalesDataDtos(long storeId, SalesType type){
@@ -65,7 +72,7 @@ public class SalesService {
     }
 
     public Map<SalesType, SalesChartDataDto> getSalesDataForChart(long storeId) {
-        List<Sales> foundSales = salesRepository.findAllByStoreIdOrderByOrderNum(storeId);
+        List<Sales> foundSales = salesRepository.findAllByStoreIdOrderByStartDate(storeId);
 
         return foundSales.stream()
                 .map(SalesResponseDto::of) // Sales 엔티티의 label 필드를 포함하여 SalesResponseDto로 변환
@@ -103,6 +110,21 @@ public class SalesService {
                                 }
                         )
                 ));
+    }
+
+    @Transactional
+    public long deleteSales(long storeId, Member member){
+        Store foundStore = storeRepository.findByMember(member)
+                .orElseThrow(NotFoundStoreByMemberException::new);
+
+        Sales foundSales = salesRepository.findById(storeId)
+                .orElseThrow(NotFoundSalesRecordException::new);
+
+        if(!foundSales.getStore().equals(foundStore)){
+            throw new PermissionDeniedException();
+        }
+        salesRepository.delete(foundSales);
+        return storeId;
     }
 
     public Path exportCsv(long storeId, SalesType type) throws IOException{

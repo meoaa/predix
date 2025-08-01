@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/base :: common_header(~{::title},~{},~{})">
+<head th:replace="layout/base :: common_header(~{::title},~{::link},~{})">
   <title>자영업자 매출 예측 시스템</title>
+  <link rel="stylesheet" th:href="@{/css/predix.css}" />
 </head>
 <body>
+<div id="loadingOverlay" style="display:none;">
+  <div id="loadingSpinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only"></span>
+    </div>
+    <p>예상 매출을 계산중입니다...</p>
+  </div>
+</div>
 <div th:replace="~{fragment/navbar :: navbar}"></div>
 <div class="container">
   <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
@@ -16,13 +25,13 @@
        <div>
          <h3>월간 예측</h3>
          <div id="forecast-month">
-
+           <div id="loadingSpinner" style="display: none;">로딩 중...</div>
          </div>
        </div>
        <div>
          <h3>주간 예측</h3>
          <div id="forecast-week">
-
+           <div id="loadingSpinner" style="display: none;">로딩 중...</div>
          </div>
        </div>
      </div>
@@ -31,59 +40,83 @@
 </div>
 </body>
 <script>
+
   const monthBox = document.querySelector("#forecast-month");
   const weekBox = document.querySelector("#forecast-week");
 
-  $.ajax({
-    url:"/api/forecast/month",
-    method:"GET",
-    success:function(response){
-      response.forEach((elem,index) => {
-        const divTag = document.createElement("div");
-        divTag.className = `month-${index}`;
+  // 로딩 팝업을 표시하는 함수
+  function showLoading() {
+      $('#loadingOverlay').fadeIn(); // 부드러운 효과로 표시
+  }
 
-        const monthTag = document.createElement("p");
-        monthTag.textContent = elem.ds;
+  // 로딩 팝업을 숨기는 함수
+  function hideLoading() {
+      $('#loadingOverlay').fadeOut(); // 부드러운 효과로 숨김
+  }
 
-        const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
-        const yhatTag = document.createElement("p");
-        yhatTag.textContent = `예상 매출: ${yhat}원`;
+  // 첫 번째 AJAX 요청 (Promise 객체로 저장)
+  const monthForecast = $.ajax({
+      url: "/api/forecast/month",
+      method: "GET",
+  });
 
-        divTag.appendChild(monthTag);
-        divTag.appendChild(yhatTag);
+  // 두 번째 AJAX 요청 (Promise 객체로 저장)
+  const weekForecast = $.ajax({
+      url: "/api/forecast/week",
+      method: "GET",
+  });
 
-        monthBox.appendChild(divTag);
-      });
-      },
-    error:function(error){
-      console.log(error);
-    }
-  })
+  // 페이지가 로드되면 바로 AJAX 요청 시작
+  $(document).ready(function() {
+      // 로딩 스피너 팝업을 띄움
+      showLoading();
 
-  $.ajax({
-    url:"/api/forecast/week",
-    method:"GET",
-    success: function(response){
-      response.forEach((elem, index) => {
-        const divTag = document.createElement("div");
-        divTag.className = `week-${index}`;
+      // 두 개의 AJAX 요청이 모두 완료될 때까지 기다림
+      $.when(monthForecast, weekForecast)
+          .done(function(monthResponse, weekResponse) {
+              // 모든 요청이 성공했을 때 실행
 
-        const weekTag = document.createElement("p");
-        weekTag.textContent = elem.ds;
+              // 월간 예측 데이터 처리
+              const monthlyData = monthResponse[0];
+              monthlyData.forEach((elem, index) => {
+                  const divTag = document.createElement("div");
+                  divTag.className = `month-${index}`;
+                  const monthTag = document.createElement("p");
+                  monthTag.textContent = elem.ds;
+                  const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
+                  const yhatTag = document.createElement("p");
+                  yhatTag.textContent = `예상 매출: ${yhat}원`;
+                  divTag.appendChild(monthTag);
+                  divTag.appendChild(yhatTag);
+                  monthBox.appendChild(divTag);
+              });
 
-        const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
-        const yhatTag = document.createElement("p");
-        yhatTag.textContent = `예상 매출: ${yhat}원`
-
-        divTag.appendChild(weekTag);
-        divTag.appendChild(yhatTag);
-
-        weekBox.appendChild(divTag);
-      })
-    },
-    error: function(error){
-      console.log(error);
-    }
-  })
+              // 주간 예측 데이터 처리
+              const weeklyData = weekResponse[0];
+              weeklyData.forEach((elem, index) => {
+                  const divTag = document.createElement("div");
+                  divTag.className = `week-${index}`;
+                  const weekTag = document.createElement("p");
+                  weekTag.textContent = elem.ds;
+                  const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
+                  const yhatTag = document.createElement("p");
+                  yhatTag.textContent = `예상 매출: ${yhat}원`;
+                  divTag.appendChild(weekTag);
+                  divTag.appendChild(yhatTag);
+                  weekBox.appendChild(divTag);
+              });
+          })
+          .fail(function(error) {
+              // 하나라도 실패했을 때 실행
+              console.log("데이터 로딩 실패:", error);
+              // 사용자에게 오류 메시지 표시
+              alert("데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.");
+          })
+          .always(function() {
+              // 성공/실패 여부와 관계없이 모든 요청 완료 후 실행
+              hideLoading();
+          });
+  });
 </script>
+
 </html>

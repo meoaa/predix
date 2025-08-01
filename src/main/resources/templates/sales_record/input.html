@@ -1,172 +1,158 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: common_header(~{::title},~{::link}, ~{})}">
-  <title>자영업자 매출 예측 시스템</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout/base :: common_header(~{::title},~{::link}, ~{})}">
+    <title>자영업자 매출 예측 시스템</title>
+    <!-- Flatpickr core -->
+    <link
+      rel="stylesheet"
+      th:href="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css}"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css}"
+    />
 
-<!-- 임시 <script type="text/javascript" defer th:src="@{/js/sales.js}"></script>-->
+    <link rel="stylesheet" th:href="@{/css/sales.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragment/navbar :: navbar}"></div>
 
-  <!-- Flatpickr core -->
-  <link
-          rel="stylesheet"
-          th:href="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css}"
-  />
-  <link
-          rel="stylesheet"
-          th:href="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.css}"
-  />
+    <div class="container">
+      <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
 
-  <link rel="stylesheet" th:href="@{/css/sales.css}" />
-</head>
-<body>
-<div th:replace="~{fragment/navbar :: navbar}"></div>
-
-<div class="container">
-  <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
-
-  <main class="main-content" id="mainContent">
-    <h2>매출 입력</h2>
-    <div class="placeholder-box">
-      <h3>유형 선택</h3>
-      <div class="type-toggle">
-      <input name="type" id="type_month" type="radio" value="month" />
-      <label for="type_month">월간</label>
-      <input name="type" id="type_week" type="radio" value="week" />
-      <label for="type_week">주간</label>
-      </div>
-      <div id="input_box">
-        <div id="input_item_box"></div>
-        <div id="btn_box"></div>
-      </div>
+      <main class="main-content" id="mainContent">
+        <h2>매출 입력</h2>
+        <div class="placeholder-box">
+          <h3>유형 선택</h3>
+          <div class="type-toggle">
+            <input name="type" id="type_month" type="radio" value="month" />
+            <label for="type_month">월간</label>
+            <input name="type" id="type_week" type="radio" value="week" />
+            <label for="type_week">주간</label>
+          </div>
+          <div id="input_box">
+            <div id="input_item_box"></div>
+            <div id="btn_box"></div>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
-</div>
-</body>
-<script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr}"></script>
+  </body>
+  <script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr}"></script>
 
-<script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js}"></script>
+  <script
+    th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js}"
+  ></script>
 
-<script th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.js}"></script>
+  <script
+    th:src="@{https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.js}"
+  ></script>
 
-<script>
-   const monthInput = document.querySelector("#type_month");
-   const weekInput = document.querySelector("#type_week");
-   const inputBox = document.querySelector("#input_box");
-   const inputItemBox = document.querySelector("#input_item_box");
-   const btnBox = document.querySelector("#btn_box");
+  <script>
+    const monthInput = document.querySelector("#type_month");
+    const weekInput = document.querySelector("#type_week");
+    const inputBox = document.querySelector("#input_box");
+    const inputItemBox = document.querySelector("#input_item_box");
+    const btnBox = document.querySelector("#btn_box");
 
-   monthInput.addEventListener("click", () => {
-     inputItemBox.innerHTML = ""; // 기존 내용 초기화
-     btnBox.innerHTML = ""; // 버튼 초기화
+    monthInput.addEventListener("click", () => {
+      inputItemBox.innerHTML = ""; // 기존 내용 초기화
+      btnBox.innerHTML = ""; // 버튼 초기화
 
-     const addBtn = document.createElement("button");
-     addBtn.textContent = "추가";
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "추가";
 
-     const submitBtn = document.createElement("button");
-     submitBtn.textContent = "제출";
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "제출";
 
-     const typeInput = document.createElement("input");
-     typeInput.type = "hidden";
-     typeInput.value = "MONTH";
-     typeInput.name = "sales_type";
+      const typeInput = document.createElement("input");
+      typeInput.type = "hidden";
+      typeInput.value = "MONTH";
+      typeInput.name = "sales_type";
 
-     // 기존 데이터 로드 및 UI 생성 함수 호출
-     loadAndDisplayMonthData();
+      // 기존 데이터 로드 및 UI 생성 함수 호출
+      loadAndDisplayData("month");
 
-     btnBox.appendChild(addBtn);
-     btnBox.appendChild(submitBtn);
+      btnBox.appendChild(addBtn);
+      btnBox.appendChild(submitBtn);
 
-     inputItemBox.appendChild(typeInput); // sales_type hidden input은 한 번만 추가
+      inputItemBox.appendChild(typeInput); // sales_type hidden input은 한 번만 추가
 
-     // '추가' 버튼 클릭 시 새로운 빈 입력 행 추가
-     addBtn.addEventListener("click", () => addMonthInputRow());
+      // '추가' 버튼 클릭 시 새로운 빈 입력 행 추가
+      addBtn.addEventListener("click", () => addMonthInputRow());
 
-     submitBtn.addEventListener("click", () => {
-       if (confirm("제출 하시겠습니까?")) {
-         submitData();
-       }
-     });
-   });
+      submitBtn.addEventListener("click", () => {
+        if (confirm("제출 하시겠습니까?")) {
+          submitData();
+        }
+      });
+    });
 
-   // 기존 월별 매출 데이터를 불러와 화면에 표시하는 함수 (변경 없음)
-   function loadAndDisplayMonthData() {
-       $.ajax({
-          url:"/api/sales/month",
-          method: "GET",
-          success: function(response){
-            if(response.success){
-              if(response.data && response.data.length > 0){
-                response.data.forEach((elem)=>{
-                   addMonthInputRow(elem);
-                });
-              }
-              addMonthInputRow();
-            }
-          },
-          error: function(error){
-            console.error("데이터 로드 중 오류 발생:", error);
-            showToast("데이터 로드 중 오류가 발생했습니다.","red","bottom");
-          }
-       });
-   }
+    // 월별 입력 행을 생성하고 DOM에 추가하는 함수
+    function addMonthInputRow(data = null) {
+      // data 인자를 추가하여 데이터 주입 여부 확인
+      const row = document.createElement("div");
+      row.className = "input_row";
 
-   // 월별 입력 행을 생성하고 DOM에 추가하는 함수 (이전 'initMonthInput'에서 이름만 변경)
-   function addMonthInputRow(data = null) { // data 인자를 추가하여 데이터 주입 여부 확인
-     const row = document.createElement("div");
-     row.className = "input_row";
+      const startDateInput = document.createElement("input");
+      startDateInput.type = "hidden";
+      startDateInput.name = "start_date";
 
-     const startDateInput = document.createElement("input");
-     startDateInput.type = "hidden";
-     startDateInput.name = "start_date";
+      const endDateInput = document.createElement("input");
+      endDateInput.type = "hidden";
+      endDateInput.name = "end_date";
 
-     const endDateInput = document.createElement("input");
-     endDateInput.type = "hidden";
-     endDateInput.name = "end_date";
+      const monthInput = document.createElement("input");
+      monthInput.type = "text";
+      monthInput.placeholder = "월 선택";
+      monthInput.className = "month-picker";
 
-     const monthInput = document.createElement("input");
-     monthInput.type = "text";
-     monthInput.placeholder = "월 선택";
-     monthInput.className = "month-picker";
+      const amountInput = document.createElement("input");
+      amountInput.type = "number";
+      amountInput.name = "amount";
+      amountInput.placeholder = "매출액을 입력해주세요.";
 
-     const amountInput = document.createElement("input");
-     amountInput.type = "number";
-     amountInput.name = "amount";
-     amountInput.placeholder = "매출액을 입력해주세요.";
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "제거";
+      deleteBtn.addEventListener("click", deleteContent);
 
-     const deleteBtn = document.createElement("button");
-     deleteBtn.textContent = "제거";
-     deleteBtn.addEventListener("click", deleteContent);
+      const idInput = document.createElement("input");
+      idInput.type = "hidden";
+      idInput.name = "id";
 
-     // --- 데이터가 주입되었을 때 필드 채우기 ---
-     if (data) {
+      // --- 데이터가 주입되었을 때 필드 채우기 ---
+      if (data) {
+        idInput.value = data.id;
         startDateInput.value = data.startDate;
         endDateInput.value = data.endDate;
         monthInput.value = data.label;
         amountInput.value = data.amount;
-     }
-     // --- 여기까지 데이터 주입 로직 ---
+      }
+      // --- 여기까지 데이터 주입 로직 ---
 
-     amountInput.addEventListener("focus", function(event){
-         const target = event.target;
-         const currentMonthInput = target.previousElementSibling;
+      amountInput.addEventListener("focus", function (event) {
+        const target = event.target;
+        const currentMonthInput = target.previousElementSibling;
 
-         if(currentMonthInput.value === ""){
-          showToast("월을 먼저 선택해주세요.","red","bottom");
+        if (currentMonthInput.value === "") {
+          showToast("월을 먼저 선택해주세요.", "red", "bottom");
           target.blur();
           currentMonthInput.focus();
           return;
-         }
+        }
 
         const allInputRows = inputItemBox.querySelectorAll(".input_row");
-        const isLastRow = target.closest(".input_row") === allInputRows[allInputRows.length - 1];
+        const isLastRow =
+          target.closest(".input_row") ===
+          allInputRows[allInputRows.length - 1];
 
         const currentMonthStr = currentMonthInput.value;
         const yearMatch = currentMonthStr.match(/(\d{4})년/);
         const monthMatch = currentMonthStr.match(/(\d{1,2})월/);
 
         if (!yearMatch || !monthMatch) {
-            console.error("월 형식 파싱 오류:", currentMonthStr);
-            return;
+          console.error("월 형식 파싱 오류:", currentMonthStr);
+          return;
         }
 
         const currentYear = parseInt(yearMatch[1], 10);
@@ -176,201 +162,164 @@
         let nextYear = currentYear;
 
         if (nextMonth === 12) {
-            nextMonth = 1;
-            nextYear += 1;
+          nextMonth = 1;
+          nextYear += 1;
         } else {
-            nextMonth += 1;
+          nextMonth += 1;
         }
 
         const nextDateObj = new Date(nextYear, nextMonth - 1, 1);
         const nextMonthFormatted = `${nextYear}년 ${nextMonth}월`;
 
         const isMonthDuplicate = (checkMonthStr) => {
-            let duplicateFound = false;
-            allInputRows.forEach(row => {
-                const rowMonthInput = row.querySelector(".month-picker");
-                if (rowMonthInput && rowMonthInput.value === checkMonthStr) {
-                    duplicateFound = true;
-                }
-            });
-            return duplicateFound;
+          let duplicateFound = false;
+          allInputRows.forEach((row) => {
+            const rowMonthInput = row.querySelector(".month-picker");
+            if (rowMonthInput && rowMonthInput.value === checkMonthStr) {
+              duplicateFound = true;
+            }
+          });
+          return duplicateFound;
         };
 
         if (isLastRow && !isMonthDuplicate(nextMonthFormatted)) {
-            // 새로운 input_row를 추가합니다.
-            // 여기서는 재귀 호출 대신 직접 새로운 빈 행을 추가합니다.
-            addMonthInputRow(); // 새로운 빈 행 생성
+          // 새로운 input_row를 추가합니다.
+          // 여기서는 재귀 호출 대신 직접 새로운 빈 행을 추가합니다.
+          addMonthInputRow(); // 새로운 빈 행 생성
 
-            const newRow = inputItemBox.lastElementChild;
-            const newMonthPicker = newRow.querySelector(".month-picker");
-            const newStartDateInput = newRow.querySelector("input[name='start_date']");
-            const newEndDateInput = newRow.querySelector("input[name='end_date']");
+          const newRow = inputItemBox.lastElementChild;
+          const newMonthPicker = newRow.querySelector(".month-picker");
+          const newStartDateInput = newRow.querySelector(
+            "input[name='start_date']"
+          );
+          const newEndDateInput = newRow.querySelector(
+            "input[name='end_date']"
+          );
 
-            if (newMonthPicker) {
-                const fp = newMonthPicker._flatpickr;
-                if (fp) {
-                    fp.setDate(nextDateObj);
-                } else {
-                    newMonthPicker.value = nextMonthFormatted;
-                }
-
-                if (newStartDateInput && newEndDateInput) {
-                    const { firstDay, lastDay } = getMonthRange(nextDateObj);
-                    newStartDateInput.value = formatDateToYYYYMMDD(firstDay);
-                    newEndDateInput.value = formatDateToYYYYMMDD(lastDay);
-                }
+          if (newMonthPicker) {
+            const fp = newMonthPicker._flatpickr;
+            if (fp) {
+              fp.setDate(nextDateObj);
+            } else {
+              newMonthPicker.value = nextMonthFormatted;
             }
+
+            if (newStartDateInput && newEndDateInput) {
+              const { firstDay, lastDay } = getMonthRange(nextDateObj);
+              newStartDateInput.value = formatDateToYYYYMMDD(firstDay);
+              newEndDateInput.value = formatDateToYYYYMMDD(lastDay);
+            }
+          }
         }
-     });
+      });
 
-     row.appendChild(startDateInput);
-     row.appendChild(endDateInput);
-     row.appendChild(monthInput);
-     row.appendChild(amountInput);
-     row.appendChild(deleteBtn);
+      row.appendChild(idInput);
+      row.appendChild(startDateInput);
+      row.appendChild(endDateInput);
+      row.appendChild(monthInput);
+      row.appendChild(amountInput);
+      row.appendChild(deleteBtn);
 
-     inputItemBox.appendChild(row);
+      inputItemBox.appendChild(row);
 
-     const fpInstance = flatpickr(monthInput, {
-       dateFormat: "Y년 n월",
-       locale: "ko",
-       onChange: function ([selectedDate]) {
-         if (!selectedDate) return;
-         const { firstDay, lastDay } = getMonthRange(selectedDate);
-         startDateInput.value = formatDateToYYYYMMDD(firstDay);
-         endDateInput.value = formatDateToYYYYMMDD(lastDay);
-       },
-     });
-     monthInput._flatpickr = fpInstance;
-   }
+      const fpInstance = flatpickr(monthInput, {
+        dateFormat: "Y년 n월",
+        locale: "ko",
+        onChange: function ([selectedDate]) {
+          if (!selectedDate) return;
+          const { firstDay, lastDay } = getMonthRange(selectedDate);
+          startDateInput.value = formatDateToYYYYMMDD(firstDay);
+          endDateInput.value = formatDateToYYYYMMDD(lastDay);
+        },
+      });
+      monthInput._flatpickr = fpInstance;
+    }
 
-   weekInput.addEventListener("click", () => {
-     inputItemBox.innerHTML = "";
-     btnBox.innerHTML = "";
+    weekInput.addEventListener("click", () => {
+      inputItemBox.innerHTML = "";
+      btnBox.innerHTML = "";
 
-     const addBtn = document.createElement("button");
-     addBtn.textContent = "추가";
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "추가";
 
-     const submitBtn = document.createElement("button");
-     submitBtn.textContent = "제출";
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "제출";
 
-     const typeInput = document.createElement("input");
-     typeInput.type = "hidden";
-     typeInput.value = "WEEK";
-     typeInput.name = "sales_type";
+      const typeInput = document.createElement("input");
+      typeInput.type = "hidden";
+      typeInput.value = "WEEK";
+      typeInput.name = "sales_type";
 
-     initWeekInput();
+      loadAndDisplayData("week");
 
-     btnBox.appendChild(addBtn);
-     btnBox.appendChild(submitBtn);
-     inputItemBox.appendChild(typeInput);
+      btnBox.appendChild(addBtn);
+      btnBox.appendChild(submitBtn);
+      inputItemBox.appendChild(typeInput);
 
-     addBtn.addEventListener("click", initWeekInput);
+      addBtn.addEventListener("click", () => addWeekInputRow());
 
-     submitBtn.addEventListener("click", () => {
-       if (confirm("제출 하시겠습니까?")) {
-         submitData();
-       }
-     });
-   });
-
-   function submitData() {
-     const salesData = [];
-     const inputRows = inputItemBox.querySelectorAll(".input_row");
-     const salesType = inputItemBox.querySelector(
-       "input[name='sales_type']"
-     ).value;
-
-     let checkValue = true;
-     inputRows.forEach((row) => {
-       const startDate = row.querySelector("input[name='start_date']").value;
-       const endDate = row.querySelector("input[name='end_date']").value;
-       const amount = row.querySelector("input[name='amount']").value;
-       const label = row.querySelector(".flatpickr-input").value;
-
-       if (!startDate || !endDate || !amount) {
-         checkValue = false;
-       }
-
-       if (amount) {
-         salesData.push({
-           startDate,
-           endDate,
-           amount: parseFloat(amount),
-           type: salesType,
-           label
-         });
-       }
-     });
-
-     const duplicateDate = hasDuplicateStartDates(salesData);
-
-     if (!checkValue) {
-       alert("모든 값을 입력해주세요.");
-       return;
-     } else if (duplicateDate) {
-       alert("중복된 기간이 존재합니다.");
-       return;
-     }
-
-     const jsonData = JSON.stringify(salesData);
-
-     $.ajax({
-       url: "/api/sales",
-       method: "POST",
-       contentType: "application/json",
-       data: jsonData,
-       dataType: "json",
-       success: function(response){
-        if(response.success){
-          window.location.href="/chart?added";
+      submitBtn.addEventListener("click", () => {
+        if (confirm("제출 하시겠습니까?")) {
+          submitData();
         }
+      });
+    });
 
-       },
-       error: function(error){
-        console.error(error);
-       }
-     });
-   }
+    function addWeekInputRow(data = null) {
+      const row = document.createElement("div");
+      row.className = "input_row";
 
+      const startDateInput = document.createElement("input");
+      startDateInput.type = "hidden";
+      startDateInput.name = "start_date";
 
+      const endDateInput = document.createElement("input");
+      endDateInput.type = "hidden";
+      endDateInput.name = "end_date";
 
-   function initWeekInput() {
-     const row = document.createElement("div");
-     row.className = "input_row";
+      const weekInput = document.createElement("input");
+      weekInput.type = "text";
+      weekInput.placeholder = "주 선택";
+      weekInput.className = "week-picker";
 
-     const startDateInput = document.createElement("input");
-     startDateInput.type = "hidden";
-     startDateInput.name = "start_date";
+      const amountInput = document.createElement("input");
+      amountInput.type = "number";
+      amountInput.name = "amount";
+      amountInput.placeholder = "매출액을 입력해주세요.";
 
-     const endDateInput = document.createElement("input");
-     endDateInput.type = "hidden";
-     endDateInput.name = "end_date";
+      const idInput = document.createElement("input");
+      idInput.type = "hidden";
+      idInput.name = "id";
 
-     const weekInput = document.createElement("input");
-     weekInput.type = "text";
-     weekInput.placeholder = "주 선택";
-     weekInput.className = "week-picker";
+      const dateTag = document.createElement("p"); // 기간을 표시할 p 태그를 미리 선언합니다.
 
-     const inputTag = document.createElement("input");
-     inputTag.type = "number";
-     inputTag.name = "amount";
-     inputTag.placeholder = "매출액을 입력해주세요.";
+      // --- 데이터가 주입되었을 때 필드 채우기 ---
+      if (data) {
+        idInput = data.id;
+        startDateInput.value = data.startDate;
+        endDateInput.value = data.endDate;
+        weekInput.value = data.label;
+        amountInput.value = data.amount;
+        dateTag.innerHTML = `${data.startDate} ~ ${data.endDate}`;
+      }
+      // --- 여기까지 데이터 주입 로직 ---
 
-     inputTag.addEventListener("focus",function(event){
+      amountInput.addEventListener("focus", function (event) {
         const target = event.target;
         const currentWeekInput = target.previousElementSibling;
 
-        if(!currentWeekInput.value){
-          showToast("주를 먼저 선택해주세요.", "red","bottom");
+        if (!currentWeekInput.value) {
+          showToast("주를 먼저 선택해주세요.", "red", "bottom");
           target.blur();
           weekInput.focus();
           return;
         }
         const allInputRows = inputItemBox.querySelectorAll(".input_row");
-        const isLastRow = target.closest(".input_row") === allInputRows[allInputRows.length - 1];
+        const isLastRow =
+          target.closest(".input_row") ===
+          allInputRows[allInputRows.length - 1];
 
-        if(isLastRow){
+        if (isLastRow) {
           // 현재 주차 입력 필드에서 연도와 주차 번호를 추출합니다 (예: "2025년 30주차").
           const currentWeekStr = currentWeekInput.value;
           const yearMatch = currentWeekStr.match(/(\d{4})년/);
@@ -390,134 +339,246 @@
 
           // 연도 변경 처리 (현재 주차가 연도의 마지막 주차인 경우)
           // 여기서는 최대 52주 또는 53주라고 가정합니다. 정확한 계산을 위해서는 해당 연도의 총 주차 수를 알아야 합니다.
-          if (nextWeek > 52) { // 대부분의 경우 52주를 가정합니다. 필요에 따라 조정하세요.
-              nextWeek = 1;
-              nextYear += 1;
+          if (nextWeek > 52) {
+            // 대부분의 경우 52주를 가정합니다. 필요에 따라 조정하세요.
+            nextWeek = 1;
+            nextYear += 1;
           }
 
           const nextWeekFormatted = `${nextYear}년 ${nextWeek}주차`;
 
           // 중복된 주차가 있는지 확인합니다.
           const isWeekDuplicate = (checkWeekStr) => {
-              let isDuplicate = false;
-              allInputRows.forEach(row => {
-                  const rowWeekInput = row.querySelector(".week-picker");
-                  if (rowWeekInput && rowWeekInput.value === checkWeekStr) {
-                      isDuplicate = true;
-                  }
-              });
-              return isDuplicate;
+            let isDuplicate = false;
+            allInputRows.forEach((row) => {
+              const rowWeekInput = row.querySelector(".week-picker");
+              if (rowWeekInput && rowWeekInput.value === checkWeekStr) {
+                isDuplicate = true;
+              }
+            });
+            return isDuplicate;
           };
 
           if (!isWeekDuplicate(nextWeekFormatted)) {
-              initWeekInput(); // 새로운 행을 생성합니다.
+            addWeekInputRow(); // 새로운 행을 생성합니다.
 
-              const newRow = inputItemBox.lastElementChild;
-              const newWeekInput = newRow.querySelector(".week-picker");
-              const newStartDateInput = newRow.querySelector("input[name='start_date']");
-              const newEndDateInput = newRow.querySelector("input[name='end_date']");
-              const newDateTag = newRow.querySelector("p"); // 새로운 행의 p 태그를 가져옵니다.
+            const newRow = inputItemBox.lastElementChild;
+            const newWeekInput = newRow.querySelector(".week-picker");
+            const newStartDateInput = newRow.querySelector(
+              "input[name='start_date']"
+            );
+            const newEndDateInput = newRow.querySelector(
+              "input[name='end_date']"
+            );
+            const newDateTag = newRow.querySelector("p"); // 새로운 행의 p 태그를 가져옵니다.
 
+            if (newWeekInput) {
+              // 새로운 주차 입력 필드의 값을 설정합니다.
+              newWeekInput.value = nextWeekFormatted;
 
-              if (newWeekInput) {
-                  // 새로운 주차 입력 필드의 값을 설정합니다.
-                  newWeekInput.value = nextWeekFormatted;
+              // 현재 행의 시작 날짜를 기준으로 다음 주차의 시작 및 종료 날짜를 계산합니다.
+              const currentStartDateStr = startDateInput.value; // 현재 행의 시작 날짜
+              if (currentStartDateStr) {
+                const currentStart = new Date(currentStartDateStr);
+                const nextWeekStart = new Date(currentStart);
+                nextWeekStart.setDate(currentStart.getDate() + 7); // 다음 주차의 시작일
 
-                  // 현재 행의 시작 날짜를 기준으로 다음 주차의 시작 및 종료 날짜를 계산합니다.
-                  const currentStartDateStr = startDateInput.value; // 현재 행의 시작 날짜
-                  if (currentStartDateStr) {
-                      const currentStart = new Date(currentStartDateStr);
-                      const nextWeekStart = new Date(currentStart);
-                      nextWeekStart.setDate(currentStart.getDate() + 7); // 다음 주차의 시작일
+                const nextWeekEnd = new Date(nextWeekStart);
+                nextWeekEnd.setDate(nextWeekStart.getDate() + 6); // 다음 주차의 종료일
 
-                      const nextWeekEnd = new Date(nextWeekStart);
-                      nextWeekEnd.setDate(nextWeekStart.getDate() + 6); // 다음 주차의 종료일
-
-                      newStartDateInput.value = formatDateToYYYYMMDD(nextWeekStart);
-                      newEndDateInput.value = formatDateToYYYYMMDD(nextWeekEnd);
-                      newDateTag.innerText = `${newStartDateInput.value} ~ ${newEndDateInput.value}`;
-                  }
+                newStartDateInput.value = formatDateToYYYYMMDD(nextWeekStart);
+                newEndDateInput.value = formatDateToYYYYMMDD(nextWeekEnd);
+                newDateTag.innerText = `${newStartDateInput.value} ~ ${newEndDateInput.value}`;
               }
+            }
           }
         }
-     })
+      });
 
-     const delBtn = document.createElement("button");
-     delBtn.textContent = "제거";
-     delBtn.addEventListener("click", deleteContent);
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "제거";
+      delBtn.addEventListener("click", deleteContent);
 
-     const dateTag = document.createElement("p");
+      row.appendChild(idInput);
+      row.appendChild(weekInput);
+      row.appendChild(amountInput);
+      row.appendChild(delBtn);
+      row.appendChild(dateTag);
 
-     row.appendChild(weekInput);
-     row.appendChild(inputTag);
-     row.appendChild(delBtn);
-     row.appendChild(dateTag);
+      row.appendChild(startDateInput);
+      row.appendChild(endDateInput);
 
-     row.appendChild(startDateInput);
-     row.appendChild(endDateInput);
+      inputItemBox.appendChild(row);
 
-     inputItemBox.appendChild(row);
+      flatpickr(weekInput, {
+        locale: "ko",
+        plugins: [new weekSelect({})],
+        dateFormat: "Y년 W주차",
+        onChange: function ([selectedDate], dateStr) {
+          if (!selectedDate) return;
 
-     flatpickr(weekInput, {
-       locale: "ko",
-       plugins: [new weekSelect({})],
-       dateFormat: "Y년 W주차",
-       onChange: function ([selectedDate], dateStr) {
-         if (!selectedDate) return;
+          const start = new Date(selectedDate);
+          const day = start.getDay();
+          const sunday = new Date(start);
+          sunday.setDate(start.getDate() - day);
+          const saturday = new Date(sunday);
+          saturday.setDate(sunday.getDate() + 6);
+          const formattedStartDate = formatDateToYYYYMMDD(sunday);
+          const formattedEndDate = formatDateToYYYYMMDD(saturday);
 
-         const start = new Date(selectedDate);
-         const day = start.getDay();
-         const sunday = new Date(start);
-         sunday.setDate(start.getDate() - day);
-         const saturday = new Date(sunday);
-         saturday.setDate(sunday.getDate() + 6);
-         const formattedStartDate = formatDateToYYYYMMDD(sunday);
-         const formattedEndDate = formatDateToYYYYMMDD(saturday);
+          startDateInput.value = formattedStartDate;
+          endDateInput.value = formattedEndDate;
 
-         startDateInput.value = formattedStartDate;
-         endDateInput.value = formattedEndDate;
+          dateTag.innerText = `${formattedStartDate} ~ ${formattedEndDate}`;
+        },
+      });
+    }
 
-         dateTag.innerText = `${formattedStartDate} ~ ${formattedEndDate}`;
-       },
-     });
-   }
+    // 기존 매출 데이터를 불러와 화면에 표시하는 함수
+    function loadAndDisplayData(type) {
+      $.ajax({
+        url: `/api/sales/${type}`,
+        method: "GET",
+        success: function (response) {
+          if (response.success) {
+            if (response.data && response.data.length > 0) {
+              response.data.forEach((elem) => {
+                if (type == "month") {
+                  addMonthInputRow(elem);
+                } else if ("week") {
+                  addWeekInputRow(elem);
+                }
+              });
+            }
+            if (type == "month") {
+              addMonthInputRow();
+            } else if (type == "week") {
+              addWeekInputRow();
+            }
+          }
+        },
+        error: function (error) {
+          console.error("데이터 로드 중 오류 발생:", error);
+          showToast("데이터 로드 중 오류가 발생했습니다.", "red", "bottom");
+        },
+      });
+    }
 
-   function deleteContent(e) {
-     const target = e.target.closest("div");
-     target.remove();
-   }
+    //제출 버튼 클릭시 실행되는 함수
+    function submitData() {
+      const salesData = [];
+      const inputRows = inputItemBox.querySelectorAll(".input_row");
+      const salesType = inputItemBox.querySelector(
+        "input[name='sales_type']"
+      ).value;
 
-   function getMonthRange(date) {
-     const year = date.getFullYear();
-     const month = date.getMonth();
+      let checkValue = true;
+      inputRows.forEach((row) => {
+        const id = row.querySelector("input[name='id']").value;
+        const startDate = row.querySelector("input[name='start_date']").value;
+        const endDate = row.querySelector("input[name='end_date']").value;
+        const amount = row.querySelector("input[name='amount']").value;
+        const label = row.querySelector(".flatpickr-input").value;
 
-     const firstDay = new Date(year, month, 1);
-     const lastDay = new Date(year, month + 1, 0);
-     return { firstDay, lastDay };
-   }
+        if (!startDate || !endDate || !amount) {
+          checkValue = false;
+        }
 
-   function formatDateToYYYYMMDD(dateObj) {
-     const year = dateObj.getFullYear();
-     const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-     const day = String(dateObj.getDate()).padStart(2, "0");
-     return `${year}-${month}-${day}`;
-   }
+        if (amount) {
+          salesData.push({
+            id,
+            startDate,
+            endDate,
+            amount: parseFloat(amount),
+            type: salesType,
+            label,
+          });
+        }
+      });
 
-   function hasDuplicateStartDates(salesData) {
-     const seenStartDates = new Set();
+      const duplicateDate = hasDuplicateStartDates(salesData);
 
-     for (const item of salesData) {
-       const startDate = item.startDate;
+      if (!checkValue) {
+        alert("모든 값을 입력해주세요.");
+        return;
+      } else if (duplicateDate) {
+        alert("중복된 기간이 존재합니다.");
+        return;
+      }
 
-       if (seenStartDates.has(startDate)) {
-         return true;
-       }
+      const jsonData = JSON.stringify(salesData);
 
-       seenStartDates.add(startDate);
-     }
+      $.ajax({
+        url: "/api/sales",
+        method: "POST",
+        contentType: "application/json",
+        data: jsonData,
+        dataType: "json",
+        success: function (response) {
+          if (response.success) {
+            window.location.href = "/chart?added";
+          }
+        },
+        error: function (error) {
+          console.error(error);
+        },
+      });
+    }
 
-     return false;
-   }
+    function deleteContent(e) {
+      const target = e.target.closest("div");
 
-</script>
+      const idValue = target.querySelector("input[name='id']").value;
+
+      if (idValue) {
+        if (confirm("제거 하시겠습니까? \n매출 데이터가 곧바로 삭제됩니다.")) {
+          $.ajax({
+            url: `/api/sales/${idValue}`,
+            method: "DELETE",
+            success: function (response) {
+              if (response.success) {
+                showToast("삭제되었습니다.", "blue", "bottom");
+              }
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        }
+      }
+      target.remove();
+    }
+
+    function getMonthRange(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      return { firstDay, lastDay };
+    }
+
+    function formatDateToYYYYMMDD(dateObj) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const day = String(dateObj.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function hasDuplicateStartDates(salesData) {
+      const seenStartDates = new Set();
+
+      for (const item of salesData) {
+        const startDate = item.startDate;
+
+        if (seenStartDates.has(startDate)) {
+          return true;
+        }
+
+        seenStartDates.add(startDate);
+      }
+
+      return false;
+    }
+  </script>
 </html>

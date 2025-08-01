@@ -8,7 +8,8 @@ import java.time.LocalDate;
 
 @Data
 @ToString
-public class SalesCreateRequestDto {
+public class SalesUpsertRequestDto {
+    private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
     private Long amount;

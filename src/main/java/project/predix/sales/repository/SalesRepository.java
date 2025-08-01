@@ -4,10 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 import project.predix.sales.domain.Sales;
 import project.predix.sales.domain.SalesType;
-import project.predix.store.domain.entity.Store;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
     int deleteByStoreIdAndType(@Param("storeId") Long storeId,
                                @Param("type") SalesType type);
 
-    List<Sales> findAllByStoreIdOrderByOrderNum(long storeId);
+    List<Sales> findAllByStoreIdOrderByStartDate(long storeId);
 
     List<Sales> findAllByStoreIdAndTypeOrderByStartDate(long storeId, SalesType type);
 
