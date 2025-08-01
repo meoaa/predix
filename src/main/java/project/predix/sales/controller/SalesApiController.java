@@ -30,16 +30,27 @@ public class SalesApiController {
             @RequestBody List<SalesCreateRequestDto> requestDtos,
             @AuthenticationPrincipal Member member){
 
-        log.info("dtos: {}", requestDtos);
 
         List<SalesCreateRequestDto> salesCreateRequestDtos = salesService.salesDataSortedAndSave(requestDtos, member);
 
         return ResponseEntity.ok(ApiResponse.of(200, "성공적으로 등록되었습니다.",salesCreateRequestDtos));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<Map<SalesType, SalesChartDataDto>>> getSalesData(@AuthenticationPrincipal Member authenticatedMember){
-        Map<SalesType, SalesChartDataDto> salesData = salesService.getSalesData(authenticatedMember.getStore().getId());
+    @GetMapping("/{type}")
+    public ResponseEntity<ApiResponse<List<SalesResponseDto>>> getSalesData(
+            @AuthenticationPrincipal Member member,
+            @PathVariable String type){
+        log.info("type :{}", type);
+        SalesType salesType = type.equals("month") ? SalesType.MONTH : SalesType.WEEK;
+        List<SalesResponseDto> salesDataDtos = salesService.getSalesDataDtos(member.getStore().getId(), salesType);
+
+        return ResponseEntity.ok(ApiResponse.of(200, "데이터 로딩 완료", salesDataDtos));
+
+    }
+
+    @GetMapping("/chart")
+    public ResponseEntity<ApiResponse<Map<SalesType, SalesChartDataDto>>> getSalesChartData(@AuthenticationPrincipal Member authenticatedMember){
+        Map<SalesType, SalesChartDataDto> salesData = salesService.getSalesDataForChart(authenticatedMember.getStore().getId());
 
         log.info("salesData : {}", salesData);
         return ResponseEntity.ok(ApiResponse.of(200, "데이터를 성공적으로 불러왔습니다.", salesData));

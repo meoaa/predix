@@ -58,7 +58,13 @@ public class SalesService {
         return dtos;
     }
 
-    public Map<SalesType, SalesChartDataDto> getSalesData(long storeId) {
+    public List<SalesResponseDto> getSalesDataDtos(long storeId, SalesType type){
+         return salesRepository.findAllByStoreIdAndTypeOrderByStartDate(storeId, type).stream()
+                .map(SalesResponseDto::of)
+                .collect(Collectors.toList());
+    }
+
+    public Map<SalesType, SalesChartDataDto> getSalesDataForChart(long storeId) {
         List<Sales> foundSales = salesRepository.findAllByStoreIdOrderByOrderNum(storeId);
 
         return foundSales.stream()

@@ -27,6 +27,7 @@ public class ForecastApiController {
 
     }
 
+
     @GetMapping("/week")
     public List<ForecastDto> getWeek(
             @AuthenticationPrincipal Member authenticatedMember) throws IOException, InterruptedException {

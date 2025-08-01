@@ -12,6 +12,7 @@ import project.predix.sales.service.SalesService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -64,6 +65,7 @@ public class ForecastService {
         pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 
         Process p = pb.start();
+        //사용 후 삭제
 
         /* 3) 결과 수신 & 종료 코드 확인 */
         String json = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
@@ -71,7 +73,7 @@ public class ForecastService {
         if (exitCode != 0) {
             throw new IllegalStateException("Python forecast failed (exit " + exitCode + ")");
         }
-
+        Files.deleteIfExists(csv);
         /* 4) JSON → DTO */
         return mapper.readValue(json, new TypeReference<List<ForecastDto>>() {});
     }

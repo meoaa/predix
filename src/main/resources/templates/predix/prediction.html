@@ -12,18 +12,78 @@
   <main class="main-content" id="mainContent">
     <h2>매출 예측</h2>
     <div class="placeholder-box">
-     하이
+     <div>
+       <div>
+         <h3>월간 예측</h3>
+         <div id="forecast-month">
+
+         </div>
+       </div>
+       <div>
+         <h3>주간 예측</h3>
+         <div id="forecast-week">
+
+         </div>
+       </div>
+     </div>
     </div>
   </main>
 </div>
 </body>
 <script>
+  const monthBox = document.querySelector("#forecast-month");
+  const weekBox = document.querySelector("#forecast-week");
+
   $.ajax({
     url:"/api/forecast/month",
     method:"GET",
     success:function(response){
-    console.log(response)},
-    error:function(error){}
+      response.forEach((elem,index) => {
+        const divTag = document.createElement("div");
+        divTag.className = `month-${index}`;
+
+        const monthTag = document.createElement("p");
+        monthTag.textContent = elem.ds;
+
+        const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
+        const yhatTag = document.createElement("p");
+        yhatTag.textContent = `예상 매출: ${yhat}원`;
+
+        divTag.appendChild(monthTag);
+        divTag.appendChild(yhatTag);
+
+        monthBox.appendChild(divTag);
+      });
+      },
+    error:function(error){
+      console.log(error);
+    }
+  })
+
+  $.ajax({
+    url:"/api/forecast/week",
+    method:"GET",
+    success: function(response){
+      response.forEach((elem, index) => {
+        const divTag = document.createElement("div");
+        divTag.className = `week-${index}`;
+
+        const weekTag = document.createElement("p");
+        weekTag.textContent = elem.ds;
+
+        const yhat = Math.trunc(elem.yhat).toLocaleString('ko-KR');
+        const yhatTag = document.createElement("p");
+        yhatTag.textContent = `예상 매출: ${yhat}원`
+
+        divTag.appendChild(weekTag);
+        divTag.appendChild(yhatTag);
+
+        weekBox.appendChild(divTag);
+      })
+    },
+    error: function(error){
+      console.log(error);
+    }
   })
 </script>
 </html>

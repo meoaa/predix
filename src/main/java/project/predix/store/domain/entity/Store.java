@@ -31,7 +31,7 @@ public class Store {
     @Column(name="store_name")
     private String name;
 
-    @OneToOne(mappedBy = "store", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "store")
     private Member member;
 
     @Enumerated(EnumType.STRING)

@@ -13,7 +13,6 @@ public class MainController {
     @GetMapping("/")
     public String mainPage(Authentication auth){
         return "index";
-
     }
 
     @GetMapping("/sales")
