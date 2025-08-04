@@ -1,76 +1,80 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: common_header(~{::title},~{},~{})}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout/base :: common_header(~{::title},~{},~{})}">
     <title>자영업자 매출 예측 시스템</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            background-color: #f4f7f6;
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 25px;
-        }
-        .chart-wrapper {
-            margin-bottom: 40px;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background-color: #fafafa;
-        }
-        canvas {
-            max-width: 100%;
-            height: auto;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 20px;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
+      .chart-wrapper {
+        margin-bottom: 40px;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: #fafafa;
+      }
+      canvas {
+        max-width: 100%;
+        height: auto;
+      }
     </style>
-</head>
-<body>
-<div th:replace="~{fragment/navbar :: navbar}"></div>
-<div class="container">
-    <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
+  </head>
+  <body>
+    <div th:replace="~{fragment/navbar :: navbar}"></div>
+    <div class="container">
+      <nav th:replace="~{fragment/sidebar :: sidebar}"></nav>
 
-    <main class="main-content" id="mainContent">
+      <main class="main-content" id="mainContent">
         <h2>매출 통계</h2>
         <div class="placeholder-box">
-            <div class="chart-wrapper">
-                <h2>월간 매출</h2>
-                <div id="monthlyAverageSales" class="average-sales-info"></div>
-                <canvas id="monthlySalesChart"></canvas>
-            </div>
+          <div class="chart-wrapper">
+            <h2>월간 매출</h2>
+            <div id="monthlyAverageSales" class="average-sales-info"></div>
+            <canvas id="monthlySalesChart"></canvas>
+          </div>
 
-            <div class="chart-wrapper">
-                <h2>주간 매출</h2>
-                <div id="weeklyAverageSales" class="average-sales-info"></div>
-                <canvas id="weeklySalesChart"></canvas>
-            </div>
+          <div class="chart-wrapper">
+            <h2>주간 매출</h2>
+            <div id="weeklyAverageSales" class="average-sales-info"></div>
+            <canvas id="weeklySalesChart"></canvas>
+          </div>
         </div>
-    </main>
-</div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+      </main>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
       const monthCtx = document.querySelector("#monthlySalesChart");
       const weekCtx = document.querySelector("#weeklySalesChart");
 
-      const monthlyAverageSalesDiv = document.querySelector("#monthlyAverageSales");
-      const weeklyAverageSalesDiv = document.querySelector("#weeklyAverageSales");
+      const monthlyAverageSalesDiv = document.querySelector(
+        "#monthlyAverageSales"
+      );
+      const weeklyAverageSalesDiv = document.querySelector(
+        "#weeklyAverageSales"
+      );
 
       const params = new URLSearchParams(location.search);
       if (params.get("added") !== null) {
-        showToast("성공적으로 등록되었습니다.", "blue","bottom");
+        showToast("성공적으로 등록되었습니다.", "blue", "bottom");
       }
 
       if (params.has("added")) {
@@ -80,122 +84,148 @@
       $.ajax({
         url: "/api/sales/chart",
         method: "GET",
-        success: function(response){
-            if(response.success){
-                const salesChartData = response.data; // 백엔드에서 넘어온 가공된 차트 데이터
+        success: function (response) {
+          if (response.success) {
+            const salesChartData = response.data; // 백엔드에서 넘어온 가공된 차트 데이터
 
-                // --- 월간 매출 차트 ---
-                if (salesChartData.MONTH) { // MONTH 데이터가 있는지 확인
-                    new Chart(monthCtx, {
-                        type: 'bar', // 월간은 막대 차트가 일반적
-                        data: {
-                            labels: salesChartData.MONTH.labels, // response.data.MONTH.labels
-                            datasets: [{
-                                label: salesChartData.MONTH.title || '월별 판매량', // 백엔드에서 받은 title 사용
-                                data: salesChartData.MONTH.data, // response.data.MONTH.data
-                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1
-                            }]
+            // --- 월간 매출 차트 ---
+            if (salesChartData.MONTH) {
+              // MONTH 데이터가 있는지 확인
+              new Chart(monthCtx, {
+                type: "bar", // 월간은 막대 차트가 일반적
+                data: {
+                  labels: salesChartData.MONTH.labels, // response.data.MONTH.labels
+                  datasets: [
+                    {
+                      label: salesChartData.MONTH.title || "월별 판매량", // 백엔드에서 받은 title 사용
+                      data: salesChartData.MONTH.data, // response.data.MONTH.data
+                      backgroundColor: "rgba(54, 162, 235, 0.6)",
+                      borderColor: "rgba(54, 162, 235, 1)",
+                      borderWidth: 1,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: salesChartData.MONTH.title || "월별 매출 통계",
+                      font: { size: 18 },
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          return (
+                            context.dataset.label +
+                            ": " +
+                            context.parsed.y.toLocaleString() +
+                            "원"
+                          );
                         },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: salesChartData.MONTH.title || '월별 매출 통계',
-                                    font: { size: 18 }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + '원';
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: { display: true, text: '판매 금액 (원)' }
-                                },
-                                x: {
-                                    title: { display: true, text: '월' }
-                                }
-                            }
-                        }
-                    });
+                      },
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: { display: true, text: "판매 금액 (원)" },
+                    },
+                    x: {
+                      title: { display: true, text: "월" },
+                    },
+                  },
+                },
+              });
 
-                     const totalMonthlySales = salesChartData.MONTH.data.reduce((sum, value) => sum + value, 0);
-                    const averageMonthlySales = salesChartData.MONTH.data.length > 0 ? totalMonthlySales / salesChartData.MONTH.data.length : 0;
-                    monthlyAverageSalesDiv.textContent = `평균 월간 매출: ${averageMonthlySales.toLocaleString()}원`;
-                } else {
-                    console.warn("월간 매출 데이터가 없습니다.");
-                    // 차트를 그리지 않거나, "데이터 없음" 메시지를 표시할 수 있습니다.
-                }
-
-
-                // --- 주간 매출 차트 ---
-                if (salesChartData.WEEK) { // WEEK 데이터가 있는지 확인
-                    new Chart(weekCtx, {
-                        type: 'line', // 주간은 선 차트가 시간 흐름 보기에 좋습니다.
-                        data: {
-                            labels: salesChartData.WEEK.labels, // response.data.WEEK.labels
-                            datasets: [{ // **여기 'datasets'입니다!**
-                                label: salesChartData.WEEK.title || '주간 판매량', // 백엔드에서 받은 title 사용
-                                data: salesChartData.WEEK.data, // response.data.WEEK.data
-                                backgroundColor: 'rgba(255, 99, 132, 0.6)', // 다른 색상으로 구분
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                fill: false // 선 아래 영역을 채울지 여부
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: salesChartData.WEEK.title || '주간 매출 통계',
-                                    font: { size: 18 }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + '원';
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: { display: true, text: '판매 금액 (원)' }
-                                },
-                                x: {
-                                    title: { display: true, text: '주차' }
-                                }
-                            }
-                        }
-                    });
-                    const totalWeeklySales = salesChartData.WEEK.data.reduce((sum, value) => sum + value, 0);
-                    const averageWeeklySales = salesChartData.WEEK.data.length > 0 ? totalWeeklySales / salesChartData.WEEK.data.length : 0;
-                    weeklyAverageSalesDiv.textContent = `평균 주간 매출: ${averageWeeklySales.toLocaleString()}원`;
-
-                } else {
-                    console.warn("주간 매출 데이터가 없습니다.");
-                }
-
+              const totalMonthlySales = salesChartData.MONTH.data.reduce(
+                (sum, value) => sum + value,
+                0
+              );
+              const averageMonthlySales =
+                salesChartData.MONTH.data.length > 0
+                  ? totalMonthlySales / salesChartData.MONTH.data.length
+                  : 0;
+              monthlyAverageSalesDiv.textContent = `평균 월간 매출: ${averageMonthlySales.toLocaleString()}원`;
             } else {
-                console.error("API 응답이 성공적이지 않습니다:", response.message);
-                // 에러 메시지 처리 (예: 사용자에게 토스트 메시지 표시)
+              console.warn("월간 매출 데이터가 없습니다.");
+              // 차트를 그리지 않거나, "데이터 없음" 메시지를 표시할 수 있습니다.
             }
+
+            // --- 주간 매출 차트 ---
+            if (salesChartData.WEEK) {
+              // WEEK 데이터가 있는지 확인
+              new Chart(weekCtx, {
+                type: "line", // 주간은 선 차트가 시간 흐름 보기에 좋습니다.
+                data: {
+                  labels: salesChartData.WEEK.labels, // response.data.WEEK.labels
+                  datasets: [
+                    {
+                      // **여기 'datasets'입니다!**
+                      label: salesChartData.WEEK.title || "주간 판매량", // 백엔드에서 받은 title 사용
+                      data: salesChartData.WEEK.data, // response.data.WEEK.data
+                      backgroundColor: "rgba(255, 99, 132, 0.6)", // 다른 색상으로 구분
+                      borderColor: "rgba(255, 99, 132, 1)",
+                      borderWidth: 1,
+                      fill: false, // 선 아래 영역을 채울지 여부
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: salesChartData.WEEK.title || "주간 매출 통계",
+                      font: { size: 18 },
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          return (
+                            context.dataset.label +
+                            ": " +
+                            context.parsed.y.toLocaleString() +
+                            "원"
+                          );
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: { display: true, text: "판매 금액 (원)" },
+                    },
+                    x: {
+                      title: { display: true, text: "주차" },
+                    },
+                  },
+                },
+              });
+              const totalWeeklySales = salesChartData.WEEK.data.reduce(
+                (sum, value) => sum + value,
+                0
+              );
+              const averageWeeklySales =
+                salesChartData.WEEK.data.length > 0
+                  ? totalWeeklySales / salesChartData.WEEK.data.length
+                  : 0;
+              weeklyAverageSalesDiv.textContent = `평균 주간 매출: ${averageWeeklySales.toLocaleString()}원`;
+            } else {
+              console.warn("주간 매출 데이터가 없습니다.");
+            }
+          } else {
+            console.error("API 응답이 성공적이지 않습니다:", response.message);
+            // 에러 메시지 처리 (예: 사용자에게 토스트 메시지 표시)
+          }
         },
-        error: function(jqXHR, textStatus, errorThrown){
-            console.error("API 호출 오류:", textStatus, errorThrown);
-            // 오류 발생 시 사용자에게 알림
-            // showToast("매출 데이터를 불러오는 데 실패했습니다.", "red", "bottom");
-        }
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.error("API 호출 오류:", textStatus, errorThrown);
+          // 오류 발생 시 사용자에게 알림
+          // showToast("매출 데이터를 불러오는 데 실패했습니다.", "red", "bottom");
+        },
       });
     });
-</script>
+  </script>
 </html>

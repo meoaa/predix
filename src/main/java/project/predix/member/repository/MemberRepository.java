@@ -5,7 +5,7 @@ import project.predix.member.domain.Member;
 
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member,Long> {
+public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepositoryCustom {
 
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);

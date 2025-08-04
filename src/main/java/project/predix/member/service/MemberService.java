@@ -13,10 +13,7 @@ import project.predix.exception.MemberNotFoundException;
 import project.predix.exception.PasswordMismatchException;
 import project.predix.member.domain.Member;
 import project.predix.member.domain.Role;
-import project.predix.member.dto.PasswordChangeRequestDto;
-import project.predix.member.dto.ProfileResponseDto;
-import project.predix.member.dto.ProfileUpdateRequestDto;
-import project.predix.member.dto.ProfileUpdateResponseDto;
+import project.predix.member.dto.*;
 import project.predix.member.repository.MemberRepository;
 
 @Service
@@ -32,6 +29,10 @@ public class MemberService {
     public SignUpResponseDto create(SignUpRequestDto dto){
         if(memberRepository.existsByUsername(dto.getUsername())){
             throw new DuplicateUsernameException(dto.getUsername());
+        }
+
+        if(memberRepository.existsByEmail(dto.getEmail())){
+            throw new DuplicateEmailException(dto.getEmail());
         }
 
         Member member = new Member(
@@ -88,6 +89,14 @@ public class MemberService {
         foundMember.changePassword(newPassword);
 
         return ProfileResponseDto.from(foundMember);
+    }
+
+    @Transactional
+    public MemberResponseDto findMemberById(Long id){
+        Member member = memberRepository.findByIdWithStore(id)
+                .orElseThrow(MemberNotFoundException::new);
+        return MemberResponseDto.of(member);
+
     }
 
 

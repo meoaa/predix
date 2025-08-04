@@ -38,11 +38,21 @@ freq     = sys.argv[3]                   # ‘W-MON’, ‘MS’ …
 # ────────────────────────────────
 # 3)  모델 학습 & 예측
 # ────────────────────────────────
-df     = pd.read_csv(csv_path, names=["ds", "y"])
-model  = Prophet(weekly_seasonality=True) if freq.startswith("W") else Prophet()
+df = pd.read_csv(csv_path, names=["ds", "y"])
+df["floor"] = 0
+cap = df["y"].max()
+df["cap"] = cap
+
+model = (
+    Prophet(weekly_seasonality=True, growth="logistic")
+    if freq.startswith("W")
+    else Prophet(growth="logistic")
+)
 model.fit(df)
 
-future   = model.make_future_dataframe(periods=periods, freq=freq)
+future = model.make_future_dataframe(periods=periods, freq=freq)
+future["floor"] = 0
+future["cap"] = cap
 forecast = model.predict(future).tail(periods)[
     ["ds", "yhat", "yhat_lower", "yhat_upper"]
 ]

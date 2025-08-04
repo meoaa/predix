@@ -113,18 +113,18 @@ public class SalesService {
     }
 
     @Transactional
-    public long deleteSales(long storeId, Member member){
+    public long deleteSales(long salesId, Member member){
         Store foundStore = storeRepository.findByMember(member)
                 .orElseThrow(NotFoundStoreByMemberException::new);
 
-        Sales foundSales = salesRepository.findById(storeId)
+        Sales foundSales = salesRepository.findById(salesId)
                 .orElseThrow(NotFoundSalesRecordException::new);
 
         if(!foundSales.getStore().equals(foundStore)){
             throw new PermissionDeniedException();
         }
         salesRepository.delete(foundSales);
-        return storeId;
+        return salesId;
     }
 
     public Path exportCsv(long storeId, SalesType type) throws IOException{
