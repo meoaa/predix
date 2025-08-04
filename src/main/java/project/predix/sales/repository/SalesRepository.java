@@ -24,4 +24,5 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
 
     List<Sales> findAllByStoreIdAndTypeOrderByStartDate(long storeId, SalesType type);
 
+    Long countByStoreId(long storeId);
 }

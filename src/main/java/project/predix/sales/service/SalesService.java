@@ -137,5 +137,9 @@ public class SalesService {
         return tmp;
     }
 
+    public long countByStoreId(long storeId){
+        return salesRepository.countByStoreId(storeId);
+    }
+
 
 }

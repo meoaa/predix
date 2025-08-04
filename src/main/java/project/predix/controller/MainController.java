@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import project.predix.member.domain.Member;
 import project.predix.member.dto.MemberResponseDto;
 import project.predix.member.service.MemberService;
+import project.predix.sales.service.SalesService;
 
 @Controller
 @AllArgsConstructor
@@ -17,6 +18,7 @@ import project.predix.member.service.MemberService;
 public class MainController {
 
     private final MemberService memberService;
+    private final SalesService salesService;
 
     @GetMapping("/")
     public String mainPage(Authentication auth){
@@ -25,14 +27,23 @@ public class MainController {
 
     @GetMapping("/sales")
     public String salesForm(@AuthenticationPrincipal Member member) {
-        MemberResponseDto foundMember = memberService.findMemberById(member.getId());
-        System.out.println("foundMember = " + foundMember);
-
+         if(member.getStore() == null){
+            return "redirect:/store";
+        }
        return "sales_record/input";
     }
 
     @GetMapping("/chart")
-    public String chartPage(){
+    public String chartPage(@AuthenticationPrincipal Member member){
+
+        if(member.getStore() == null){
+            return "redirect:/store";
+        }
+        long count = salesService.countByStoreId(member.getStore().getId());
+        if(count == 0){
+            return "redirect:/sales";
+        }
+
         return "chart/chart";
     }
 

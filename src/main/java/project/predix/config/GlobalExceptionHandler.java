@@ -7,10 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import project.predix.common.ErrorResponse;
-import project.predix.exception.DuplicateEmailException;
-import project.predix.exception.DuplicateUsernameException;
-import project.predix.exception.MemberNotFoundException;
-import project.predix.exception.PasswordMismatchException;
+import project.predix.exception.*;
 
 @ControllerAdvice
 @Slf4j
@@ -41,6 +38,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handlePasswordMismatchException(PasswordMismatchException ex){
         return new ResponseEntity<>(ErrorResponse.of(400,ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleWeatherStationNotMatchException(WeatherStationNotMatchException ex){
+        return new ResponseEntity<>(ErrorResponse.of(400, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

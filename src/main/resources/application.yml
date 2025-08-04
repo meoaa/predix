@@ -52,3 +52,8 @@ logging:
           util:
             net:
               jsse: INFO
+
+weather:
+  kma:
+    base-url: https://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList
+    service-key:

@@ -85,7 +85,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ff2d0f520dd899b7d5a807d1c4cc2ff5&libraries=services"></script>
+<script
+        src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ff2d0f520dd899b7d5a807d1c4cc2ff5&libraries=services"></script>
 <script>
   const sinceInput = document.querySelector("input[name='since']");
   const submitBtn = document.querySelector("#submit-btn");
@@ -178,6 +179,8 @@
 
     const jsonPayLoad = JSON.stringify(storeData);
 
+    console.log(storeData);
+    return
     $.ajax({
       url: "/api/store/create",
       method: "POST",

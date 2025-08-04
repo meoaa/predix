@@ -4,8 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import project.predix.member.domain.Member;
-import project.predix.member.domain.QMember;
-import project.predix.store.domain.entity.QStore;
 
 import java.util.Optional;
 
@@ -21,12 +19,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
     @Override
     public Optional<Member> findByIdWithStore(Long id) {
 
-        QMember qMember = member;
-        QStore qStore = store;
         Member result = queryFactory
-                .select(qMember)
-                .leftJoin(qMember.store, qStore).fetchJoin()
-                .where(qMember.id.eq(id))
+                .selectFrom(member)
+                .leftJoin(member.store, store).fetchJoin()
+                .where(member.id.eq(id))
                 .fetchOne();
 
         return Optional.ofNullable(result);
