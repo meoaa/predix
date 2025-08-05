@@ -21,4 +21,5 @@ public class CreateRequestDto {
     private LocalDate since;
     private String x;
     private String y;
+    private int stationCode;
 }

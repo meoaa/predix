@@ -55,5 +55,7 @@ logging:
 
 weather:
   kma:
-    base-url: https://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList
-    service-key:
+    base-url: https://apis.data.go.kr/1360000/AsosDalyInfoService
+    path: /getWthrDataList
+    service-key: iS%2FOIVQl9q2GFdM7dMe95g54%2F8vO%2BYtVrPjNAsb7XnFZzxmNzFJx1aalV5urX0bijdJnxVnkz7asruxX8aV1Dw%3D%3D
+    max-rows: 999

@@ -1,4 +1,4 @@
-package project.predix.predictor.service;
+package project.predix.forecast.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import project.predix.predictor.dto.ForecastDto;
+import project.predix.forecast.dto.ForecastDto;
 import project.predix.sales.domain.SalesType;
 import project.predix.sales.service.SalesService;
 

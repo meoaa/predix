@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import project.predix.member.domain.Member;
 import project.predix.sales.domain.Sales;
 import project.predix.store.domain.enums.BusinessCategory;
@@ -18,10 +19,14 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="tb_store")
+@ToString
 public class Store {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "station_id")
+    private int stationId;
 
     @OneToMany(mappedBy = "store",
             cascade = CascadeType.ALL,
@@ -76,7 +81,7 @@ public class Store {
 
     private LocalDate since;
 
-    private Store(String name, BusinessCategory category, String address, String roadAddress, String region1, String region2, String region3, String hRegion3, String roadName, String x, String y, String bCode, String hCode, LocalDate since) {
+    private Store(String name, BusinessCategory category, String address, String roadAddress, String region1, String region2, String region3, String hRegion3, String roadName, String x, String y, String bCode, String hCode, LocalDate since,int stationId) {
         this.name = name;
         this.category = category;
         this.createdAt = LocalDateTime.now();
@@ -92,6 +97,7 @@ public class Store {
         this.bCode = bCode;
         this.hCode = hCode;
         this.since = since;
+        this.stationId = stationId;
     }
     public static Store of(CreateRequestDto dto){
         return new Store(
@@ -108,7 +114,8 @@ public class Store {
                 dto.getY(),
                 dto.getCodeB(),
                 dto.getCodeH(),
-                dto.getSince());
+                dto.getSince(),
+                dto.getStationCode());
     }
 
     public Store(String name,

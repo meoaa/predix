@@ -12,6 +12,7 @@ import project.predix.store.dto.CreateRequestDto;
 import project.predix.store.dto.CreateResponseDto;
 import project.predix.store.dto.FindByMemberResponseDto;
 import project.predix.store.repository.StoreRepository;
+import project.predix.weather.weatherstation.service.WeatherStationMappingService;
 
 import java.util.Optional;
 
@@ -23,16 +24,24 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final WeatherStationMappingService weatherStationMappingService;
 
     @Transactional
     public CreateResponseDto saveStore(CreateRequestDto requestDto, Long memberId){
+
         Member foundMember = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundStoreByMemberException::new);
         Store store = Store.of(requestDto);
         foundMember.assignStore(store);
         Store savedStore = storeRepository.save(store);
+
+        int stnCode = weatherStationMappingService.resolveCode(savedStore.getRegion1(), savedStore.getRegion2());
+
+
         return new CreateResponseDto(savedStore.getName(),savedStore.getAddress(),savedStore.getSince());
     }
+
+
 
     public Optional<FindByMemberResponseDto> searchOptionalStoreByMember(Member member){
         return storeRepository.findByMember(member)

@@ -1,4 +1,4 @@
-package project.predix.predictor.dto;
+package project.predix.forecast.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;

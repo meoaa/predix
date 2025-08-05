@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static project.predix.weatherstation.domain.QWeatherStationMapping.weatherStationMapping;
+import static project.predix.weather.weatherstation.domain.QWeatherStationMapping.weatherStationMapping;
+
 
 @Repository
 @RequiredArgsConstructor
