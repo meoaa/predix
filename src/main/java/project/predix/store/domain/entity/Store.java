@@ -25,8 +25,8 @@ public class Store {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "station_id")
-    private int stationId;
+    @Column(name = "station_code")
+    private Integer stationCode;
 
     @OneToMany(mappedBy = "store",
             cascade = CascadeType.ALL,
@@ -81,7 +81,7 @@ public class Store {
 
     private LocalDate since;
 
-    private Store(String name, BusinessCategory category, String address, String roadAddress, String region1, String region2, String region3, String hRegion3, String roadName, String x, String y, String bCode, String hCode, LocalDate since,int stationId) {
+    private Store(String name, BusinessCategory category, String address, String roadAddress, String region1, String region2, String region3, String hRegion3, String roadName, String x, String y, String bCode, String hCode, LocalDate since,int stationCode) {
         this.name = name;
         this.category = category;
         this.createdAt = LocalDateTime.now();
@@ -97,7 +97,7 @@ public class Store {
         this.bCode = bCode;
         this.hCode = hCode;
         this.since = since;
-        this.stationId = stationId;
+        this.stationCode = stationCode;
     }
     public static Store of(CreateRequestDto dto){
         return new Store(
