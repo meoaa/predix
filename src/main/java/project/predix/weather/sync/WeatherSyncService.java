@@ -59,6 +59,7 @@ public class WeatherSyncService {
             items.forEach(j -> buffer.add(map(j)));
             if(buffer.size() >= 1000) {
                 repository.bulkUpsert(buffer);
+                log.info("▶︎ inserted {} rows (page {})", buffer.size(), page);
                 buffer.clear();
             }
         }

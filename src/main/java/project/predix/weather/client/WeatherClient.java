@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriUtils;
 import project.predix.weather.config.WeatherProps;
 
 import java.nio.charset.StandardCharsets;
@@ -27,9 +28,12 @@ public class WeatherClient {
     private final XmlMapper xmlMapper = new XmlMapper();
 
     public JsonNode fetchDaily(int stnId, LocalDate from, LocalDate to, int page) {
+        String serviceKey = props.getServiceKey();
+
         return weatherWebClient.get()
                 .uri(b -> b.path(props.getPath())
-                        .queryParam("ServiceKey", props.getServiceKey())
+//                        .queryParam("ServiceKey", props.getServiceKey())
+                        .queryParam("serviceKey", "{serviceKey}")
                         .queryParam("dataType", "JSON")
                         .queryParam("dataCd", "ASOS")
                         .queryParam("dateCd", "DAY")
@@ -38,7 +42,7 @@ public class WeatherClient {
                         .queryParam("stnIds",  stnId)
                         .queryParam("pageNo",  page)
                         .queryParam("numOfRows", props.getMaxRows())
-                        .build())   // ServiceKey 중복 인코딩 방지
+                        .build(serviceKey))   // ServiceKey 중복 인코딩 방지
                 .exchangeToMono(res -> {
                     MediaType ct = res.headers().contentType().orElse(MediaType.APPLICATION_JSON);
                     if (ct.isCompatibleWith(MediaType.APPLICATION_JSON)) {
